@@ -17,7 +17,7 @@ Route::get('/search', 'SearchController@index');
 Route::get('/zic', 'ZicController@index');
 //Route::get('/chart', 'ChartController@index');
 
-//Route::post('/api', 'ApiController@index');
+Route::post('/api', 'ApiController@index');
 Route::post('/api/initialData', 'ApiController@initialData');
 Route::post('/api/dictionary', 'ApiController@dictionary');
 Route::post('/api/search', 'ApiController@search');
