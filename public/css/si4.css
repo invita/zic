@@ -1,0 +1,275 @@
+a { color: #888; }
+a:hover { color:#555; }
+
+body, div, span { font-size:12px; color: #222; }
+table { background:inherit; }
+
+div.nav1 { margin-left:10px; }
+
+.mainMenuList { display: inline; font-weight: bold; border-right: silver solid 2px; padding:0px 3px 0px 4px; }
+.noBorder { border:none; }
+.inline { display: inline-table; }
+.floatRight { float:right; }
+.margin5 { margin:5px; }
+.bold { font-weight:bold; }
+.vmid { vertical-align:middle; }
+.vtop { vertical-align:top; }
+
+table.logoTable { border:none; margin-bottom:0px; }
+div.mainTitle { display:inline-table; font-size:18px; margin-left:10px; margin-top:12px; vertical-align:top; color:#8e130b; }
+div.formTitle { font-size:16px; margin-bottom:10px; color:#8e130b; }
+ul.simpleList { list-style: disc inside; margin-top: 3px; }
+ul.simpleList li { line-height: 15px; }
+
+div.statusDiv { font-weight:bold; margin: 4px 12px 0px 0px; color:#8e130b; }
+div.errorDiv { color:#996666; }
+
+span.loginName { color:#8e130b; font-weight:bold; }
+
+img.logoImage { height:36px; opacity:1; position:relative; z-index:1; margin:3px; }
+img.loadingGif { width:65px; position:absolute; left:6px; z-index:2; top:-14px; opacity:1; }
+img.loadingGif2 { width:24px; position:absolute; z-index:1000; }
+
+
+/* *** Widgets *** */
+
+/* si4TabPage */
+div.si4TabHeader { border-bottom:#222 solid 3px;  }
+div.si4TabButton { display:inline-table; padding:7px 10px 5px 10px; border:#222 solid 1px; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+    border-left-width:0px; border-bottom-width:0px; border-radius:8px 8px 0px 0px; cursor:pointer; }
+div.si4TabButton.active { border-color:#222; }
+div.si4TabButton:first-of-type { border-left-width:1px; }
+div.si4TabContent { margin-top:5px; }
+
+span.si4TabButton_caption { }
+span.si4TabButton_closeButton { position:relative; margin:0px 12px 0px 5px; }
+span.si4TabButton_closeButton > img { position:absolute; left:2px; top:-2px; width:16px; max-width:16px;
+    border-radius:10px; opacity:0.75; }
+span.si4TabButton_closeButton > img:hover { opacity:1.0; }
+
+/* si4Panel */
+div.si4Panel { }
+div.si4Panel.si4PanelFlowLayout { display:inline-table; }
+div.si4Panel.si4PanelBlockLayout { display:block; }
+div.si4PanelGroup.si4PanelFlowLayout { display:inline-table; }
+div.si4PanelGroup > div.header { font-weight:bold; /*border:silver solid 1px;*/ padding:5px; margin-bottom:6px; }
+div.si4PanelGroup > div.content {}
+
+/* si4Input */
+div.si4InputDiv { }
+
+input.si4Input, textarea.si4Input { margin:0px 0px 2px 0px; color:#444; vertical-align: top; }
+input.si4Input.flat { border:none; box-shadow:none; background:inherit; }
+div.si4Input.flat { width:300px; border:none; box-shadow:none; background:inherit; line-height:18px;
+    white-space: pre-line; }
+
+input.si4Input[type=text], input.si4Input[type=password], textarea.si4Input { width:200px; }
+input.si4Input.short[type=text], input.si4Input.short[type=password], textarea.si4Input.short { width:60px; }
+
+input.si4Input.searchInput[type=text], textarea.si4Input.searchInput { width:120px; }
+div.si4InputDiv.modified > .si4Input { border: orange solid 1px; }
+
+select.si4Input { width: 200px; -webkit-appearance: none; height: 22.28px;
+    margin-bottom: 2px; padding: 3px 3px 3px 5px; border-radius: 0px;
+    background: white url(../img/expand.png) 184px center no-repeat;
+    background-size: 10px;
+    border: 1px solid #cccccc; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.75); font-size: 0.875em; padding: 0.5em; height: 2.3125em;
+}
+
+input.si4Input.short {  }
+
+/*
+input.si4Input[type=submit] { border:#222 solid 1px; }
+*/
+
+input.si4Input.lookupKey { width:60px; }
+input.si4Input.lookupValue { width:140px; }
+
+.si4InputCaption { display:inline-table; /* width:100px; */ margin:5px; color:#888; font-size:11px; }
+div.si4InputDiv > .si4Input { display:inline-table; }
+div.si4InputDiv > .si4Input.lookupKey { border-right: silver dotted 1px; }
+div.si4InputDiv > .si4Input.lookupValue { border-left:none; }
+
+div.si4InputDiv > .inputButton { display:inline-table; width:24px; height:24px; border:silver solid 1px;
+    text-align:center; margin:0px 0px 0px 2px; padding-top:5px; vertical-align:top; cursor:pointer;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); font-weight:bold; }
+div.si4InputDiv > .inputButton:hover { border:#87BCEA solid 1px; }
+div.si4InputDiv > .delButton { }
+div.si4InputDiv > .addButton { }
+div.si4InputDiv > .lookupButton { }
+div.si4InputDiv > .lookupButton > img { width:12px; margin:0px -1px -1px -1px; }
+div.si4InputDiv > .editButton { }
+div.si4InputDiv > .editButton > img { width:6px; margin:-2px -1px 1px -1px; }
+div.si4InputDiv > .inputButton:last-of-type { border-radius:0px 8px 8px 0px; }
+
+div.si4InputDiv > .si4CodeMirror { width:100%; min-height:50px; }
+
+input::-webkit-input-placeholder { color: #DDDDDD; }
+input:-moz-placeholder { color: #DDDDDD; }
+input::-moz-placeholder { color: #DDDDDD; }
+input:-ms-input-placeholder { color: #DDDDDD; }
+
+div.dataTableFormView.si4Form { margin-bottom:10px; }
+div.dataTableFormView.si4Form > div.si4InputDiv { height:20px; }
+div.dataTableFormView.si4Form > hr { margin:4px 0px 2px 0px; }
+
+div.si4Form > div.header { font-weight:bold; /*border:silver solid 1px;*/ padding:5px; margin:12px 0px 6px 0px; }
+div.si4Form > div.content {}
+div.si4Form > div.actionBar { text-align: right; }
+div.si4Form > div.actionBar > img.actionButton { width:16px; margin:0px 2px; cursor:pointer; }
+div.si4Form > div.actionBar > img.copyButton { }
+div.si4Form > div.actionBar > img.pasteButton { }
+
+input.si4Input[type=button], input.si4Input[type=submit] { color:white; padding:3px 10px; margin-right:3px; }
+input.si4Input[type=button].gradGold, input.si4Input[type=submit].gradGold { color:black; }
+
+/*
+select.codeSelect { vertical-align: top; height: 23px; margin-top: -5px; margin-bottom: -5px; border: silver solid 1px; }
+*/
+
+select.codeSelect {
+    -webkit-appearance: none; height: 24.28px;
+    margin-bottom: 2px; padding: 3px 3px 3px 5px; border-radius: 0px;
+    background: white url(../img/expand.png) 74px center no-repeat;
+    background-size: 10px;
+    border: 1px solid #cccccc; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.75); font-size: 0.875em; padding: 0.5em;
+    margin-top: -5px; margin-bottom: -5px;
+}
+
+
+/* si4MultiSelect */
+div.si4MultiSelect { margin:0px 0px 2px 0px; }
+div.si4MultiSelect > .buttonsContainer { display:inline-table; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        width:200px; border:#cccccc solid 1px; }
+div.multiSelectButton { padding:4px; cursor:pointer; }
+div.multiSelectButton:hover { background:#DDEEFF;  }
+div.multiSelectButton.selected { background:#99BBDD; }
+
+div.si4MultiSelect > .buttonsContainer > hr { margin:4px 2px; }
+
+/* si4DataTable */
+img.dataTableSortIcon { margin-left:6px; }
+div.si4DataTable { /* margin:5px; */ }
+div.si4DataTable > table.si4DataTable_table { margin-bottom:5px }
+div.si4DataTable > table.si4DataTable_table.width100percent { width:100%; }
+div.si4DataTable > table.si4DataTable_table thead > tr {  }
+div.si4DataTable > table.si4DataTable_table thead > tr > td.sortable:hover { cursor:pointer; background:#DDEEFF; }
+div.si4DataTable > table.si4DataTable_table tbody > tr { cursor:pointer; height:28px; }
+div.si4DataTable > table.si4DataTable_table tbody > tr.hoverable:hover { background:#DDEEFF; }
+div.si4DataTable > table.si4DataTable_table tbody > tr.duplicated { background:#FFDDAA; }
+div.si4DataTable > table.si4DataTable_table tbody > tr.duplicated.hoverable:hover { background:#EEEECC; }
+div.si4DataTable > table.si4DataTable_table tbody > tr.regular { background:#DDFFDD; }
+div.si4DataTable > table.si4DataTable_table tbody > tr.alternative { background:#FFDDDD; }
+div.si4DataTable > table.si4DataTable_table tbody > tr > td.hoverable:hover { cursor:pointer; background:#DDEEFF; }
+div.si4DataTable > table.si4DataTable_table tbody > tr > td.si4DataTable_shortText > div { color:gray; font-size:11px; }
+div.si4DataTable > table.si4DataTable_table tbody > tr > td.dataTable_td_button { padding:0px; }
+div.si4DataTable > table.si4DataTable_table tbody > tr > td.dataTable_td_button > div { display:block; text-align: center;
+    padding: 5px; border-style:solid; border-color:#bbb #888 #666 #aaa; border-width:1px 1px 1px 1px;
+    border-radius: 8px; }
+div.si4DataTable > table.si4DataTable_table tbody > tr > td.dataTableCheckboxCell { text-align: center; }
+div.si4DataTable > table.si4DataTable_table tbody > tr > td.dataTableCheckboxCell input { width:auto !important; }
+
+div.si4DataTable > table.si4DataTable_table tbody > tr > td.dataTableInputCell {  }
+div.si4DataTable > table.si4DataTable_table tbody > tr > td.dataTableInputCell input { margin-bottom: 3px; height: 24px; }
+
+div.si4DataTable > table.si4DataTable_table tbody > tr > td.dataTable_deleteField { }
+
+div.si4DataTable > div > button.insertButton { margin-bottom:5px; cursor:pointer; background:none; border:none;
+    padding:0px; }
+div.si4DataTable > div > button.insertButton > span { color:#6699CC; font-weight:bold; margin-left:4px; vertical-align:middle; }
+div.si4DataTable > div > button.insertButton > img { vertical-align:middle; }
+div.si4DataTable > div.dsControl { margin: 2px 0px 3px 0px; }
+
+div.si4DataTable > div.dsControl > div.firstButton { margin-right:6px; cursor:pointer; color:#666; font-weight:bold; }
+div.si4DataTable > div.dsControl > div.firstButton:hover { color:#6699CC; }
+div.si4DataTable > div.dsControl > div.firstButton > img { margin:1px 2px; }
+div.si4DataTable > div.dsControl > div.prevButton { margin-right:6px; cursor:pointer; color:#666; font-weight:bold; }
+div.si4DataTable > div.dsControl > div.prevButton:hover { color:#6699CC; }
+div.si4DataTable > div.dsControl > div.prevButton > img { margin:1px 2px; }
+div.si4DataTable > div.dsControl > div.nextButton { margin-left:6px; cursor:pointer; color:#666; font-weight:bold; }
+div.si4DataTable > div.dsControl > div.nextButton:hover { color:#6699CC; }
+div.si4DataTable > div.dsControl > div.nextButton > img { margin:1px 3px; }
+div.si4DataTable > div.dsControl > div.lastButton { margin-left:6px; cursor:pointer; color:#666; font-weight:bold; }
+div.si4DataTable > div.dsControl > div.lastButton:hover { color:#6699CC; }
+div.si4DataTable > div.dsControl > div.lastButton > img { margin:1px 3px; }
+div.si4DataTable > div.dsControl > div.filterButton { margin-left:12px; cursor:pointer; color:#666; font-weight:bold; }
+div.si4DataTable > div.dsControl > div.filterButton:hover { color:#6699CC; }
+div.si4DataTable > div.dsControl > div.filterButton > img { margin:0px 2px; }
+div.si4DataTable > div.dsControl > div.exportButton { margin-left:16px; cursor:pointer; }
+div.si4DataTable > div.dsControl > input.dataTable_pageInput { width:35px; text-align:center; color:#444; border:none; }
+div.si4DataTable > div.dsControl > input.dataTable_pageCount { width:35px; text-align:center; color:#444; border:none; }
+div.si4DataTable > div.dsControl > input.dataTable_recsPerPageInput { width:35px; text-align:center; color:#444; border:none; }
+
+
+/* dataTableFilterInput */
+div.dataTableFilterInput { padding:0px; }
+div.dataTableFilterInput > input.si4Input { display:block; margin:auto; padding:0px; min-width:20px;
+    width:20px; height:30px; margin:0px -5px 0px -3px; padding:0px 1px; }
+div.dataTableFilterInput.disabled > input.si4Input { background:#DDDDDD; opacity:0.25; }
+
+/* dataTableValueInput */
+div.dataTableValueInput { padding:0px; }
+div.dataTableValueInput > input.si4Input { display:block; margin:auto; padding:0px; min-width:20px;
+    width:20px; height:20px; margin:0px -5px 0px -3px; padding:0px 1px; }
+div.dataTableValueInput.disabled > input.si4Input { background:#DDDDDD; opacity:0.5; }
+
+div.si4DataTable > div.infoDiv { color:#222; background:#F5F5F5; display:inline-table; padding:5px; font-size:12px; border:#DDD solid 1px; font-weight:bold; }
+
+div.listLine { marigin:5px; }
+div.listField { margin-left:5px; vertical-align:middle; }
+
+
+div.si4Dialog { /*position:absolute;*/ position:fixed; left:0px; top:0px; width:100%; height:100%; text-align:center;
+    vertical-align: middle; }
+div.si4Dialog > div.dialogBg { position:fixed; background:black; top:0px; left:0px;
+    width:100%; height:100%; z-index:1001; opacity:0.40; }
+div.si4Dialog > div.dialogContainer { position:relative; border:white solid 1px; z-index:1002;
+    top: 10%; display: inline-table; box-shadow: black 2px 2px 2px; background: white; }
+div.si4Dialog > div.dialogContainer > div.dialogHeader { border:silver solid 1px;  z-index:1003;
+    text-align: center; padding:4px; font-weight:bold; }
+div.si4Dialog > div.dialogContainer > div.dialogHeader > div.titleDiv { display:inline-table; color:inherit; }
+div.si4Dialog > div.dialogContainer > div.dialogHeader > div.closeDiv { display:inline-table; color:inherit;
+    opacity:0.6; float:right; cursor:pointer; margin:0px 2px 0px 5px; }
+div.si4Dialog > div.dialogContainer > div.dialogHeader > div.closeDiv:hover { opacity:1; }
+div.si4Dialog > div.dialogContainer > div.dialogContent { z-index:1003; padding:5px; text-align:left; }
+
+div.si4Hint { position:absolute; border:#DDDDDD solid 1px; border-radius:5px; padding:8px; background: #EEEEAA;
+    opacity:0.95; color:black; }
+span.hintTitle { color:white; font-weight:bold; font-size:14px; line-height:20px; }
+span.hintPropKey { color:gray; font-size:12px; }
+span.hintPropVal { color:black; font-size:12px; line-height:16px; }
+
+
+div.si4AutoComplete { }
+div.si4AutoCompleteLine { cursor: pointer; line-height:18px; font-size:12px; }
+
+/*div.si4AutoCompleteLine:hover,*/
+div.si4AutoCompleteLine.marked { text-decoration:underline; }
+
+tr.si4HtmlTable_tr { }
+td.si4HtmlTable_td { vertical-align:top; }
+
+div.initLoader { height:35px; margin-left:30px; margin-top:12px; font-weight: bold; color:gray; padding:2px 5px; }
+div.navigation { height:35px; margin-left:30px; margin-top:12px; }
+ul.navigationUl > li:last-child { border-right:none; }
+div.identityDiv { margin:10px; }
+
+.outputElement { margin:2px 10px; padding:3px 5px; border:#CCCCCC solid 1px;
+        font-family:'Courier New', Courier, monospace; }
+.lineBreak { display:block; }
+
+img.icon8  { width:8px; }
+img.icon12 { width:12px; }
+img.icon16 { width:16px; }
+img.icon24 { width:24px; }
+
+table.borderCollapseSeparate { border-collapse: separate; }
+
+.minWidth300 { min-width:300px; }
+.valignTop { vertical-align:top; }
+
+div.CodeMirror { height:auto; }
+
+#primaryPage { padding: 10px; }

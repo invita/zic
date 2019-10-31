@@ -1,1 +1,1 @@
-# zic
+# ZIC - Zgodovinski index citiranosti
