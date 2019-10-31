@@ -4,7 +4,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
     <link rel="icon" type="image/png" href="/img/icon.png">
-    <title>Žrtve 1. svetovne vojne</title>
+    <title>ZIC - Zgodovinski indeks citiranosti</title>
 
     <script src="/lib/jquery/jquery-2.1.1.js"></script>
     <script src="/lib/Chart.min.js"></script>
