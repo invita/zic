@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Zic extends Model
 {
-    protected $table = 'ZIC_GLAVNA_TABELA';
+    protected $table = 'ZIC_GLAVNA_TABELA_V2';
     protected $fillable = [
         'ID',
         'OpTipBiblEnote',

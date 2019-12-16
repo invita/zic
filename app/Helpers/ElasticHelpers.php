@@ -47,6 +47,96 @@ class ElasticHelpers
         "zic": {
             "date_detection": false,
             "properties": {
+                "authors.IME": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "authors.PRIIMEK": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "OpNaslov": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "OpNaslov": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "OpVzpNaslov": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "OpPodnaslov": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "PvNaslov": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "PvNaslovKratki": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "PvPodnaslov": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "PvVzporedniNaslov": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
                 "OpAvtor0": {
                     "type": "text",
                     "fields": {
@@ -228,6 +318,129 @@ HERE;
         $dataElastic = \Elasticsearch::connection()->search($requestArgs);
         return $dataElastic;
     }
+
+
+    public static function suggestCreators($creatorTerm, $limit = 30)
+    {
+
+        $creatorWords = explode(" ", $creatorTerm);
+        $creatorSimple = "";
+        if (count($creatorWords) > 0) $creatorSimple .= $creatorWords[0];
+        if (count($creatorWords) > 1) $creatorSimple .= " ".$creatorWords[1];
+
+        $queryStringWild = $creatorSimple."*";
+
+        $should = [];
+        $should[] = [
+            "query_string" => [
+                "fields" => [
+                    "authors.IME",
+                ],
+                "query" => $queryStringWild
+            ]
+        ];
+
+        $should[] = [
+            "query_string" => [
+                "fields" => [
+                    "authors.PRIIMEK",
+                ],
+                "query" => $queryStringWild
+            ]
+        ];
+
+        $query = [
+            "bool" => [ "should" => $should ]
+        ];
+
+
+        $requestArgs = [
+            "index" => env("SI4_ELASTIC_ZIC_INDEX"),
+            "type" => env("SI4_ELASTIC_ZIC_DOCTYPE"),
+            "body" => [
+                "query" => $query,
+                "from" => 0,
+                "size" => $limit,
+            ]
+        ];
+
+        //print_r($requestArgs);
+
+        return \Elasticsearch::connection()->search($requestArgs);
+
+    }
+
+    public static function suggestTitlesForCreator($creator, $title, $limit = 30)
+    {
+        $must = [];
+        $should = [];
+
+        if ($creator) {
+            $creatorWords = explode(" ", $creator);
+            foreach ($creatorWords as $creatorWord) {
+                $should[] = [
+                    "query_string" => [
+                        "fields" => [
+                            "authors.IME",
+                        ],
+                        "query" => $creatorWord
+                    ]
+                ];
+                $should[] = [
+                    "query_string" => [
+                        "fields" => [
+                            "authors.PRIIMEK",
+                        ],
+                        "query" => $creatorWord
+                    ]
+                ];
+            }
+        }
+
+        $titleWords = explode(" ", $title);
+        foreach ($titleWords as $titleWord) {
+            $must[] = [
+                "query_string" => [
+                    "fields" => [
+                        "OpNaslov",
+                    ],
+                    "query" => $titleWord."*"
+                ],
+            ];
+        }
+
+        $query = [
+            "bool" => [
+                "should" => $should,
+                "must" => $must,
+            ]
+        ];
+
+        $requestArgs = [
+            "index" => env("SI4_ELASTIC_ZIC_INDEX"),
+            "type" => env("SI4_ELASTIC_ZIC_DOCTYPE"),
+            "body" => [
+                "query" => $query,
+                "from" => 0,
+                "size" => $limit,
+            ]
+        ];
+
+        //print_r($requestArgs);
+
+        return \Elasticsearch::connection()->search($requestArgs);
+    }
+
+    public static $skipChars = [",", "\\."];
+    public static function removeSkipCharacters($str) {
+        foreach (self::$skipChars as $skipChar) {
+            $str = mb_ereg_replace($skipChar, "", $str);
+        }
+        return $str;
+    }
+
+
+
 
     public static function distinctDezela() {
         $requestArgs = [

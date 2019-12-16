@@ -22,7 +22,9 @@ Route::post('/api/initialData', 'ApiController@initialData');
 Route::post('/api/dictionary', 'ApiController@dictionary');
 Route::post('/api/search', 'ApiController@search');
 
-//Route::get('/api/reindex', 'ApiController@reindex');
+Route::get('/api/searchSuggest', 'ApiController@searchSuggest');
+
+Route::get('/api/reindex', 'ApiController@reindex');
 
 Route::get('/zicPdf', 'FileController@zicPdf');
 

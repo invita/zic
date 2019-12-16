@@ -7,6 +7,8 @@
     <title>ZIC - Zgodovinski indeks citiranosti</title>
 
     <script src="/lib/jquery/jquery-2.1.1.js"></script>
+    <script src="/lib/jquery-ui-1.12.1/jquery-ui.js"></script>
+
     <script src="/lib/Chart.min.js"></script>
 
     <script src="/js/si4/si4.js"></script>
@@ -34,6 +36,7 @@
     <script src="/js/si4/modules/index.js"></script>
     <script src="/js/si4/modules/search.js"></script>
     <script src="/js/si4/modules/zic.js"></script>
+    <script src="/js/si4/search/autocomplete.js"></script>
     <script src="/js/si4/init.js"></script>
 
     <script>
@@ -60,6 +63,7 @@
     <!-- End Piwik Code -->
 
 
+    <link rel="stylesheet" href="/lib/jquery-ui-1.12.1/jquery-ui.min.css" />
     <link rel="stylesheet" href="/lib/zurb/css/normalize.css" />
     <link rel="stylesheet" href="/lib/zurb/css/foundation.css" />
     <script src="/lib/zurb/js/foundation.min.js"></script>

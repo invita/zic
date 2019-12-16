@@ -46,8 +46,8 @@ HERE;
     }
 
     public static function replaceCommonPlaceholders($content) {
-        $zicCount = DB::table('ZIC_GLAVNA_TABELA')->count();
-        $zicLastModified = DB::table('ZIC_GLAVNA_TABELA')->max('DATETIME_ADDED');
+        $zicCount = DB::table('ZIC_GLAVNA_TABELA_V2')->count();
+        $zicLastModified = DB::table('ZIC_GLAVNA_TABELA_V2')->max('DATETIME_ADDED');
         $zicLastModifiedFormat = date("d.m.Y", strtotime($zicLastModified));
 
         $replaceMap = [

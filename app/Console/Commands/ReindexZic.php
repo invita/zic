@@ -4,6 +4,10 @@ namespace App\Console\Commands;
 
 use App\Helpers\ElasticHelpers;
 use App\Models\Zic;
+use App\Models\ZicAuthors;
+use App\Models\ZicCitati;
+use App\Models\ZicCitatiAuthors;
+use App\Models\ZicEditors;
 use Illuminate\Console\Command;
 
 class ReindexZic extends Command
@@ -46,6 +50,25 @@ class ReindexZic extends Command
         $zic = $zicDb ? $zicDb->toArray() : null;
 
         if ($zic) {
+
+            // Load authors
+            $authors = ZicAuthors::query()->where(["ZIC_ID" => $zicId])->get()->toArray();
+            $zic["authors"] = $authors;
+
+            // Load editors
+            $editors = ZicEditors::query()->where(["ZIC_ID" => $zicId])->get()->toArray();
+            $zic["editors"] = $editors;
+
+            // Load citati
+            $citati = ZicCitati::query()->where(["gtid" => $zicId])->get()->toArray();
+            foreach ($citati as $cIdx => $citat) {
+                $cId = $citat["cid"];
+                // Load citati authors
+                $citatiAuthors = ZicCitatiAuthors::query()->where(["GT_ID" => $zicId, "C_ID" => $cId])->get()->toArray();
+                $citati[$cIdx]["citatiAuthors"] = $citatiAuthors;
+            }
+            $zic["citati"] = $citati;
+
 
             $dateFieldsToParse = ["ROJSTVO", "SMRT"];
             foreach ($dateFieldsToParse as $dateField) {
