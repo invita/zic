@@ -205,9 +205,10 @@ div.si4DataTable > div.dsControl > input.dataTable_recsPerPageInput { width:35px
 
 /* dataTableFilterInput */
 div.dataTableFilterInput { padding:0px; }
-div.dataTableFilterInput > input.si4Input { display:block; margin:auto; padding:0px; min-width:20px;
+div.dataTableFilterInput > input.si4Input { display:block; min-width:20px;
     width:20px; height:30px; margin:0px -5px 0px -3px; padding:0px 1px; }
-div.dataTableFilterInput.disabled > input.si4Input { background:#DDDDDD; opacity:0.25; }
+div.dataTableFilterInput > select.si4Input { height:30px; margin:0px -5px 0px -3px; }
+div.dataTableFilterInput.disabled > .si4Input { background:#DDDDDD; opacity:0.25; }
 
 /* dataTableValueInput */
 div.dataTableValueInput { padding:0px; }

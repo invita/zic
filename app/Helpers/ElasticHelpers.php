@@ -144,6 +144,14 @@ class ElasticHelpers
                             "type": "keyword"
                         }
                     }
+                },
+                "OpSistoryUrnId": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
                 }
             }
         }
@@ -204,14 +212,54 @@ HERE;
         return \Elasticsearch::connection()->delete($requestArgs);
     }
 
+
     /**
+     * Retrieves matching documents from elastic search
+     * @param $query String to match
+     * @param $offset Integer offset
+     * @param $limit Integer limit
+     * @param $sortField String elastic field name to sort on
+     * @param $sortOrder String asc or desc
+     * @param $highlight Array highlight parameter
+     * @return array
+     */
+    public static function search($query, $offset = 0, $limit = 10, $sortField = null, $sortOrder = "asc", $highlight = null)
+    {
+        $requestArgs = [
+            "index" => env("SI4_ELASTIC_ZIC_INDEX"),
+            "type" => env("SI4_ELASTIC_ZIC_DOCTYPE"),
+            "body" => [
+                "query" => $query,
+                "from" => $offset,
+                "size" => $limit,
+            ]
+        ];
+
+        if ($sortField) {
+            $requestArgs["body"]["sort"] = [$sortField => [ "order" => $sortOrder ]];
+        }
+
+        if ($highlight) {
+            $requestArgs["body"]["highlight"] = $highlight;
+        }
+
+        //print_r($requestArgs);
+
+        return \Elasticsearch::connection()->search($requestArgs);
+    }
+
+
+    /*
      * Retrieves all matching documents from elastic search
      * @param $query String to match
      * @param $offset Integer offset
      * @param $limit Integer limit
      * @return array
      */
-    public static function search($query, $filter, $offset = 0, $limit = 10, $sortField = null, $sortOrder = "asc")
+
+    // Obsolete
+    /*
+    public static function search_old($query, $filter, $offset = 0, $limit = 10, $sortField = null, $sortOrder = "asc")
     {
         foreach ($filter as $key => $val) {
             $query .= " AND ".$key.":".$val;
@@ -226,13 +274,6 @@ HERE;
                         "query" => $query,
                     ]
                 ],
-                /*
-                "query" => [
-                    "match" => [
-                        "_all" => $query,
-                    ]
-                ],
-                */
                 //"filter" => $esFilter,
                 //"sort" => "id",
                 "from" => $offset,
@@ -249,8 +290,56 @@ HERE;
             ];
         }
 
+        print_r($requestArgs);
+
         return \Elasticsearch::connection()->search($requestArgs);
     }
+    */
+
+
+    public static function searchString($queryString, $filters, $offset = 0, $limit = 10, $sortField = null, $sortOrder = "asc")
+    {
+
+        $searchFields = [
+            "authors.IME",
+            "authors.PRIIMEK",
+            "OpNaslov",
+            "OpCobId",
+            "OpSistoryUrnId",
+            "PvISSN",
+        ];
+
+        $must = [];
+        $should = [];
+
+        $must[] = [
+            "simple_query_string" => [
+                "fields" => $searchFields,
+                "query" => $queryString,
+                "default_operator" => "and",
+            ],
+        ];
+
+        if ($filters) {
+            foreach ($filters as $fKey => $fVal) {
+                $must[] = [
+                    "query_string" => [
+                        "default_field" => $fKey,
+                        "query" => $fVal,
+                    ],
+                ];
+            }
+        }
+
+        $query = [ "bool" => [] ];
+        if (count($should)) $query["bool"]["should"] = $should;
+        if (count($must)) $query["bool"]["must"] = $must;
+
+        //print_r($query);
+
+        return self::search($query, $offset, $limit, $sortField, $sortOrder, null);
+    }
+
 
     /**
      * Retrieves all matching documents from elastic search
@@ -372,9 +461,12 @@ HERE;
 
     public static function suggestTitlesForCreator($creator, $title, $limit = 30)
     {
+        //print_r(["creator" => $creator, "title" => "'".$title."'"]);
+
         $must = [];
         $should = [];
 
+        /*
         if ($creator) {
             $creatorWords = explode(" ", $creator);
             foreach ($creatorWords as $creatorWord) {
@@ -396,6 +488,30 @@ HERE;
                 ];
             }
         }
+        */
+
+        if ($creator) {
+
+            $creatorWords = explode(" ", $creator);
+
+            $must[] = [
+                "query_string" => [
+                    "fields" => [
+                        "authors.IME",
+                    ],
+                    "query" => join(" OR ", $creatorWords)
+                ],
+            ];
+            $must[] = [
+                "query_string" => [
+                    "fields" => [
+                        "authors.PRIIMEK",
+                    ],
+                    "query" => join(" OR ", $creatorWords)
+                ],
+            ];
+        }
+
 
         $titleWords = explode(" ", $title);
         foreach ($titleWords as $titleWord) {
@@ -409,12 +525,10 @@ HERE;
             ];
         }
 
-        $query = [
-            "bool" => [
-                "should" => $should,
-                "must" => $must,
-            ]
-        ];
+        $query = [ "bool" => [] ];
+
+        if ($should) $query["bool"]["should"] = $should;
+        if ($must) $query["bool"]["must"] = $must;
 
         $requestArgs = [
             "index" => env("SI4_ELASTIC_ZIC_INDEX"),

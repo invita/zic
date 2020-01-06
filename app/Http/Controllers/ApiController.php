@@ -35,7 +35,7 @@ class ApiController extends Controller
 
         $pageStart = isset($inputJson["pageStart"]) ? $inputJson["pageStart"] : 0;
         $pageCount = isset($inputJson["pageCount"]) ? $inputJson["pageCount"] : 20;
-        $sortField = isset($inputJson["sortField"]) ? $inputJson["sortField"] : "ID";
+        $sortField = isset($inputJson["sortField"]) ? $inputJson["sortField"] : null;
         $sortOrder = isset($inputJson["sortOrder"]) ? $inputJson["sortOrder"] : "asc";
 
         $filter = $inputJson["filter"];
@@ -47,7 +47,7 @@ class ApiController extends Controller
 
         try {
             if ($q) {
-                $zicsElastic = ElasticHelpers::search($q, $filter, $pageStart, $pageCount, $sortField, $sortOrder);
+                $zicsElastic = ElasticHelpers::searchString($q, $filter, $pageStart, $pageCount, $sortField, $sortOrder);
 
                 $rowCount = $zicsElastic["hits"]["total"];
                 $zics = ElasticHelpers::elasticResultToSimpleArray($zicsElastic);
@@ -197,6 +197,8 @@ class ApiController extends Controller
 
             }
         }
+
+        //print_r($creatorResults);
 
         $oneCreator = self::findShortestMatching($termLower, array_keys($creatorResults));
 

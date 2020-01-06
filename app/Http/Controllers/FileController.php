@@ -16,7 +16,14 @@ class FileController extends Controller
     public function zicPdf(Request $request) {
         $id = intval($request->input('id'));
 
-        $zicsElastic = ElasticHelpers::search("ID:".$id, [], 0, 1);
+
+        $query = [
+            "match" => [
+                "ID" => $id
+            ]
+        ];
+
+        $zicsElastic = ElasticHelpers::search($query, 0, 1);
         $zics = ElasticHelpers::elasticResultToSimpleArray($zicsElastic);
 
         if (count($zics)) {
@@ -38,6 +45,51 @@ class FileController extends Controller
 
                 $idx ++;
             }
+            //print_r($zic);
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadHTML($html);
+            return $pdf->stream();
+        }
+
+        die("...");
+    }
+
+    public function zicTablePdf(Request $request) {
+        $q = $request->input('q');
+        $filter = $request->input('filter');
+
+        $filterParams = [];
+        if ($filter) {
+            $filterParams = json_decode(base64_decode($filter), true);
+        }
+
+        //print_r($filterParams);
+
+        $zicsElastic = ElasticHelpers::searchString($q, $filterParams, 0, 100);
+        $zics = ElasticHelpers::elasticResultToSimpleArray($zicsElastic);
+
+        if (count($zics)) {
+            $html = '<style>body { font-family: DejaVu Sans; }</style>';
+            $html .= '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+
+            foreach ($zics as $zic) {
+                $html .= '<h4>'.__("zic.pdf_title").': '.$zic["ID"].'</h4>';
+
+                $idx = 0;
+                foreach (FieldHelpers::$fields as $key) {
+                    $val = isset($zic[$key]) ? $zic[$key] : null;
+                    if (!$val) continue;
+
+                    $html .= '<div style="font-size:12px;padding:3px; background-color:'.($idx%2 ? 'white':'#F9F9F9').'">';
+                    $html .= '  <span style="font-weight:bold; width:150px;">'.__("zic.field_".$key). ':</span> '.
+                        '  <span style="">' .$val .'</span>';
+                    $html .= '</div>';
+
+                    $idx ++;
+                }
+                $html .= '<hr/>';
+            }
+
             //print_r($zic);
             $pdf = App::make('dompdf.wrapper');
             $pdf->loadHTML($html);

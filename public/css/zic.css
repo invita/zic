@@ -886,6 +886,7 @@ img.dlIco {
 /* Zic */
 #pageHolder {
     margin-top: 25px;
+    position: static;
 }
 
 .moduleSearch, .moduleZic {

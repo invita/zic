@@ -20,6 +20,10 @@ si4.modules.search = function(args) {
         dataSource: new si4.widget.si4DataTableDataSource({
             moduleName: "search",
             select: si4.api.search,
+            exportPdf: function(data, callback) {
+                window.open("/zicTablePdf"+location.search);
+                //si4.api.zicTable
+            },
             staticData : { q: args.q },
             pageCount: 20
         }),
@@ -46,7 +50,8 @@ si4.modules.search = function(args) {
             ID: { caption: "Id" },
             OpAvtor0: { caption: si4.translate("field_OpAvtor0"), canSort: true, canFilter: true },
             OpNaslov: { caption: si4.translate("field_OpNaslov"), canSort: true, canFilter: true },
-            OpTipologija: { caption: si4.translate("field_OpTipologija"), canSort: true, canFilter: true, format: tipologyFormat },
+            OpTipologija: { caption: si4.translate("field_OpTipologija"), canSort: true, canFilter: true,
+                format: tipologyFormat, filterOptions: si4.initData.sif_tipologies },
             PvLeto: { caption: si4.translate("field_PvLeto"), canSort: true, canFilter: true },
             PvKraj: { caption: si4.translate("field_PvKraj"), canSort: true, canFilter: true },
             PvZalozba: { caption: si4.translate("field_PvZalozba"), canSort: true, canFilter: true },
@@ -58,6 +63,7 @@ si4.modules.search = function(args) {
         showOnlyDefinedFields: true,
         maxRecordCount: 10000,
         replaceUrlPagination: true,
+        canExportPdf: true,
         //cssClass_table: "si4DataTable_table width100percent"
     });
 };

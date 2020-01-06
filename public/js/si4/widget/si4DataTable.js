@@ -39,6 +39,7 @@ si4.widget.si4DataTable = function(args)
     this.initRefresh = si4.getArg(args, "initRefresh", true);
     this.canExportXls = si4.getArg(args, "canExportXls", false);
     this.canExportCsv = si4.getArg(args, "canExportCsv", false);
+    this.canExportPdf = si4.getArg(args, "canExportPdf", false);
     this.filterHint = si4.getArg(args, "filterHint", true);
     this.customControlls = si4.getArg(args, "customControlls", null);
     this.replaceUrlPagination = si4.getArg(args, "replaceUrlPagination", false);
@@ -319,6 +320,16 @@ si4.widget.si4DataTable = function(args)
             _p[cpName].exportCsvDiv.selector.click(function(){
                 if (!_p.dataSource) return;
                 _p.dataSource.exportCsv();
+            });
+        }
+
+        if (_p.canExportPdf) {
+            _p[cpName].exportPdfDiv = new si4.widget.si4Element({parent:_p[cpName].selector, tagClass:"inline exportButton vmid", hint:"Export as PDF (pdf)"});
+            _p[cpName].exportPdfImg = new si4.widget.si4Element({parent:_p[cpName].exportPdfDiv.selector, tagName:"img", tagClass:"icon16 vmid"});
+            _p[cpName].exportPdfImg.selector.attr("src", "/img/icon/pdf.png");
+            _p[cpName].exportPdfDiv.selector.click(function(){
+                if (!_p.dataSource) return;
+                _p.dataSource.exportPdf();
             });
         }
 
@@ -1074,6 +1085,7 @@ si4.widget.si4DataTableField = function(tableRowWnd, args) {
     this.fieldValue = si4.getArg(args, "fieldValue", null);
     this.canSort = si4.getArg(args, "canSort", true);
     this.canFilter = si4.getArg(args, "canFilter", this.canSort);
+    this.filterOptions = si4.getArg(args, "filterOptions", null);
     this.row = si4.getArg(args, "row", null);
     this.dataTable = si4.getArg(args, "dataTable", this.row ? this.row.dataTable : null);
     this.clearValue = si4.getArg(args, "clearValue", "");
@@ -1131,15 +1143,28 @@ si4.widget.si4DataTableField = function(tableRowWnd, args) {
             this.selector.addClass("sortable");
     } else if (this.filterField) {
         // Filter field
-        this.input = new si4.widget.si4Input({parent:this.valueDiv.selector, name:this.fieldKey,
-            caption:false, readOnly:!this.canFilter, showModified:false});
-        this.input.selector.addClass('dataTableFilterInput');
-        if (!this.canFilter) this.input.selector.addClass('disabled');
-        this.input.onEnterPressed(function(e) {
-            _p.dataTable.applyFilter();
-            _p.dataTable.refresh();
-        });
-        this.hasInput = true;
+
+        if (this.filterOptions) {
+            this.input = new si4.widget.si4Input({parent:this.valueDiv.selector, name:this.fieldKey,
+                type: "select", values: this.filterOptions, addEmptyOption: true,
+                caption:false, readOnly:!this.canFilter, showModified:false});
+            this.input.selector.addClass('dataTableFilterInput');
+            if (!this.canFilter) this.input.selector.addClass('disabled');
+            this.input.input.selector.change(function(e) {
+                _p.dataTable.applyFilter();
+                _p.dataTable.refresh();
+            });
+        } else {
+            this.input = new si4.widget.si4Input({parent:this.valueDiv.selector, name:this.fieldKey,
+                caption:false, readOnly:!this.canFilter, showModified:false});
+            this.input.selector.addClass('dataTableFilterInput');
+            if (!this.canFilter) this.input.selector.addClass('disabled');
+            this.input.onEnterPressed(function(e) {
+                _p.dataTable.applyFilter();
+                _p.dataTable.refresh();
+            });
+            this.hasInput = true;
+        }
     } else if (this.subRowField) {
         // Subrow Field
     } else {
@@ -1368,12 +1393,21 @@ si4.widget.si4DataTableDataSource = function(args) {
     this._cons();
 
     this.moduleName = si4.getArg(args, "moduleName", null);
-    this.methodNames = si4.getArg(args, "methodNames", { select:'dataTableSelect', delete:'dataTableDelete',
-        updateRow:'dataTableUpdateRow', exportXls:'dataTableExportXls', exportCsv:'dataTableExportCsv' });
+    this.methodNames = si4.getArg(args, "methodNames", {
+        select:'dataTableSelect',
+        delete:'dataTableDelete',
+        updateRow:'dataTableUpdateRow',
+        exportXls:'dataTableExportXls',
+        exportCsv:'dataTableExportCsv',
+        exportPdf:'dataTableExportPdf'
+    });
 
     this.selectF = si4.getArg(args, "select", function(){});
     this.deleteF = si4.getArg(args, "delete", function(){});
     this.updateRowF = si4.getArg(args, "updateRow", function(){});
+    this.exportXlsF = si4.getArg(args, "exportXls", function(){});
+    this.exportCsvF = si4.getArg(args, "exportCsv", function(){});
+    this.exportPdfF = si4.getArg(args, "exportPdf", function(){});
 
     this.filter = si4.getArg(args, "filter", {});
     this.filterMode = si4.getArg(args, "filterMode", "normal");
@@ -1430,14 +1464,20 @@ si4.widget.si4DataTableDataSource = function(args) {
     };
 
     this.exportXls = function(args) {
-        return si4.callMethod(_p.getMethodCallData(_p.methodNames.exportXls, args), function(rArgs) {
+        _p.exportXlsF(_p.getMethodCallData(_p.methodNames.exportXls, args), function(rArgs) {
             if (rArgs.status && rArgs.link) location.href = rArgs.link;
         });
     };
 
     this.exportCsv = function(args) {
-        return si4.callMethod(_p.getMethodCallData(_p.methodNames.exportCsv, args), function(rArgs) {
+        _p.exportCsvF(_p.getMethodCallData(_p.methodNames.exportCsv, args), function(rArgs) {
             if (rArgs.status && rArgs.link) location.href = rArgs.link;
         });
-    }
+    };
+
+    this.exportPdf = function(args) {
+        _p.exportPdfF(_p.getMethodCallData(_p.methodNames.exportPdf, args), function(rArgs) {
+            if (rArgs.status && rArgs.link) location.href = rArgs.link;
+        });
+    };
 };

@@ -27,4 +27,5 @@ Route::get('/api/searchSuggest', 'ApiController@searchSuggest');
 Route::get('/api/reindex', 'ApiController@reindex');
 
 Route::get('/zicPdf', 'FileController@zicPdf');
+Route::get('/zicTablePdf', 'FileController@zicTablePdf');
 
