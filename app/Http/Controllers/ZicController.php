@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ElasticHelpers;
-use App\Helpers\FieldHelpers;
+use App\Helpers\ZicUtil;
 use Illuminate\Http\Request;
 
 class ZicController extends LayoutController
@@ -34,13 +34,15 @@ class ZicController extends LayoutController
             return abort(404);
         }
 
-        $zic = $zics[$zicId];
+        $zic = ZicUtil::zicDisplay($zics[$zicId]);
+
 
         $viewData = $this->getLayoutData($request, [
             "zicId" => $zicId,
             "zicRest" => $zicRest,
             "zic" => $zic,
-            "fields" => FieldHelpers::$fields,
+            "fields" => ZicUtil::$detailsViewFields,
+            "citatiFields" => ZicUtil::$detailsViewCitatiFields,
         ]);
         return view('zic', $viewData);
     }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ElasticHelpers;
-use App\Helpers\FieldHelpers;
+use App\Helpers\ZicUtil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
@@ -27,14 +27,14 @@ class FileController extends Controller
         $zics = ElasticHelpers::elasticResultToSimpleArray($zicsElastic);
 
         if (count($zics)) {
-            $zic = $zics[0];
+            $zic = ZicUtil::zicDisplay($zics[0]);
 
             $html = '<style>body { font-family: DejaVu Sans; }</style>';
             $html .= '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
             $html .= '<h3>'.__("zic.pdf_title").': '.$id.'</h3>';
 
             $idx = 0;
-            foreach (FieldHelpers::$fields as $key) {
+            foreach (ZicUtil::$detailsViewFields as $key) {
                 $val = isset($zic[$key]) ? $zic[$key] : null;
                 if (!$val) continue;
 
@@ -66,7 +66,7 @@ class FileController extends Controller
         //print_r($filterParams);
 
         $zicsElastic = ElasticHelpers::searchString($q, $filterParams, 0, 100);
-        $zics = ElasticHelpers::elasticResultToSimpleArray($zicsElastic);
+        $zics = ZicUtil::zicsDisplay(ElasticHelpers::elasticResultToSimpleArray($zicsElastic));
 
         if (count($zics)) {
             $html = '<style>body { font-family: DejaVu Sans; }</style>';
@@ -76,7 +76,7 @@ class FileController extends Controller
                 $html .= '<h4>'.__("zic.pdf_title").': '.$zic["ID"].'</h4>';
 
                 $idx = 0;
-                foreach (FieldHelpers::$fields as $key) {
+                foreach (ZicUtil::$tableViewFields as $key) {
                     $val = isset($zic[$key]) ? $zic[$key] : null;
                     if (!$val) continue;
 

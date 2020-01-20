@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Si4Util;
 use App\Helpers\SifHelpers;
+use App\Helpers\ZicUtil;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Illuminate\Http\Request;
 use App\Helpers\ElasticHelpers;
@@ -50,7 +51,7 @@ class ApiController extends Controller
                 $zicsElastic = ElasticHelpers::searchString($q, $filter, $pageStart, $pageCount, $sortField, $sortOrder);
 
                 $rowCount = $zicsElastic["hits"]["total"];
-                $zics = ElasticHelpers::elasticResultToSimpleArray($zicsElastic);
+                $zics = ZicUtil::zicsDisplay(ElasticHelpers::elasticResultToSimpleArray($zicsElastic));
             }
         } catch (\Exception $e) {
             if ($e instanceof ElasticsearchException) {
@@ -268,6 +269,7 @@ class ApiController extends Controller
     public function initialData(Request $request) {
         $result = [
             "sif_tipologies" => SifHelpers::getTipologies(),
+            "sif_languages" => SifHelpers::getLanguages(),
         ];
 
         return json_encode($result);

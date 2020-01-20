@@ -929,6 +929,9 @@ img.dlIco {
     padding-left: 5px !important;
 }
 .zicDetails .attrValue {
+    white-space: pre;
+    line-height: 18px;
+    padding: 4px;
     /*
     font-size: 0.875rem;
     */
@@ -937,6 +940,36 @@ img.dlIco {
 .zicDetails > div:nth-child(odd) {
     background-color: #F9F9F9;
 }
+
+/* Citati */
+#citatiToggleHandle {
+    cursor: pointer;
+    position: relative;
+    margin-left: 20px;
+}
+#citatiToggleHandle:after {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 7px;
+    background: transparent url(../img/expand.png) center center no-repeat;
+    background-size: 12px;
+    width: 12px;
+    height: 12px;
+    transform: rotate(-90deg);
+    transition: transform 0.3s;
+}
+#citatiToggleHandle.active:after {
+    transform: rotate(0deg);
+}
+
+#pageHolder .citati * {
+    font-size: inherit;
+}
+.citati th {  }
+
+
+
 
 #langSelect {
     text-align: right;

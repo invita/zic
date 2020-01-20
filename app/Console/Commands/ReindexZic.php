@@ -9,6 +9,7 @@ use App\Models\ZicCitati;
 use App\Models\ZicCitatiAuthors;
 use App\Models\ZicEditors;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class ReindexZic extends Command
 {
@@ -70,19 +71,16 @@ class ReindexZic extends Command
             $zic["citati"] = $citati;
 
 
-            $dateFieldsToParse = ["ROJSTVO", "SMRT"];
-            foreach ($dateFieldsToParse as $dateField) {
-                $date = isset($zic[$dateField]) ? $zic[$dateField] : null;
-                if ($date) {
-                    try {
-                        $dateYearMonth = $this->parseYearMonth($date);
-                        if ($dateYearMonth["LETO"]) $zic[$dateField."_LETO"] = $dateYearMonth["LETO"];
-                        if ($dateYearMonth["MESEC"]) $zic[$dateField."_MESEC"] = $dateYearMonth["MESEC"];
-                    } catch (\Exception $e) {
-                        $this->warn("Error trying to parseYearMonth '".$date."'");
-                    }
-                }
-            }
+            // Citati count
+            $zic["citatiCount"] = count($citati);
+
+
+            // Citirano count
+            $OpNaslov = isset($zic["OpNaslov"]) ? $zic["OpNaslov"] : "";
+            $query = DB::raw("SELECT COUNT(DISTINCT GT_ID, C_ID) AS CNT FROM ZIC_CITATI_TITLES_V2 WHERE TRIM(NAZIV) = :val");
+            $citiranoCountDB = DB::selectOne($query, [ "val" => $OpNaslov ]);
+            $zic["citiranoCount"] = $citiranoCountDB->CNT;
+
 
             //print_r($zic);
             $indexBody = $zic;
@@ -92,36 +90,4 @@ class ReindexZic extends Command
         }
     }
 
-    private function parseYearMonth($date) {
-        $result = [
-            "MESEC" => null,
-            "LETO" => null
-        ];
-
-        $date = preg_replace('/\s/', "", $date);
-        $dateSplit = preg_split('/[\-\.\/]/', $date);
-
-        if (preg_match('/[\d]{1,2}.[\d]{1,2}.[\d]{4}/', $date)) {
-            // DD.MM.YYYY
-            $result["LETO"] = intval($dateSplit[2]);
-            $result["MESEC"] = intval($dateSplit[1]);
-        } else if (preg_match('/[\d]{4}.[\d]{1,2}.[\d]{1,2}/', $date)) {
-            // YYYY.MM.DD
-            $result["LETO"] = intval($dateSplit[0]);
-            $result["MESEC"] = intval($dateSplit[1]);
-        } else if (preg_match('/[\d]{1,2}.[\d]{4}/', $date)) {
-            // MM.YYYY
-            $result["LETO"] = intval($dateSplit[1]);
-            $result["MESEC"] = intval($dateSplit[0]);
-        } else if (preg_match('/[\d]{4}.[\d]{1,2}/', $date)) {
-            // YYYY.MM
-            $result["LETO"] = intval($dateSplit[0]);
-            $result["MESEC"] = intval($dateSplit[1]);
-        } else if (preg_match('/[\d]{4}/', $date)) {
-            // YYYY only
-            $result["LETO"] = intval($date);
-        }
-
-        return $result;
-    }
 }

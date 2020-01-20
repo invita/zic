@@ -259,8 +259,12 @@ si4.widget.si4DataTable = function(args)
         _p[cpName].pageInput = new si4.widget.si4Element({parent:_p[cpName].selector,
             tagName:"input", tagClass:"inline vmid dataTable_pageInput"});
         _p[cpName].pageInput.selector.keypress(function(e){
-            if (e.which == 13)
-                _p.switchPage(_p[cpName].pageInput.selector.val());
+            if (e.which == 13) {
+                var val = _p[cpName].pageInput.selector.val();
+                var intVal = parseInt(val);
+                if (isNaN(intVal)) intVal = 1;
+                _p.switchPage(intVal);
+            }
         });
         _p[cpName].pageInput.selector.val(_p.initPage);
 
@@ -1086,6 +1090,7 @@ si4.widget.si4DataTableField = function(tableRowWnd, args) {
     this.canSort = si4.getArg(args, "canSort", true);
     this.canFilter = si4.getArg(args, "canFilter", this.canSort);
     this.filterOptions = si4.getArg(args, "filterOptions", null);
+    this.filterClassName = si4.getArg(args, "filterClassName", null);
     this.row = si4.getArg(args, "row", null);
     this.dataTable = si4.getArg(args, "dataTable", this.row ? this.row.dataTable : null);
     this.clearValue = si4.getArg(args, "clearValue", "");
@@ -1149,6 +1154,7 @@ si4.widget.si4DataTableField = function(tableRowWnd, args) {
                 type: "select", values: this.filterOptions, addEmptyOption: true,
                 caption:false, readOnly:!this.canFilter, showModified:false});
             this.input.selector.addClass('dataTableFilterInput');
+            if (this.filterClassName) this.input.selector.addClass(this.filterClassName);
             if (!this.canFilter) this.input.selector.addClass('disabled');
             this.input.input.selector.change(function(e) {
                 _p.dataTable.applyFilter();
@@ -1158,6 +1164,7 @@ si4.widget.si4DataTableField = function(tableRowWnd, args) {
             this.input = new si4.widget.si4Input({parent:this.valueDiv.selector, name:this.fieldKey,
                 caption:false, readOnly:!this.canFilter, showModified:false});
             this.input.selector.addClass('dataTableFilterInput');
+            if (this.filterClassName) this.input.selector.addClass(this.filterClassName);
             if (!this.canFilter) this.input.selector.addClass('disabled');
             this.input.onEnterPressed(function(e) {
                 _p.dataTable.applyFilter();

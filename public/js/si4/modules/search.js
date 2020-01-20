@@ -4,9 +4,27 @@ si4.modules.search = function(args) {
 
     var tipologyFormat = function(fieldValue, rowValue, field) {
         var sif = si4.initData.sif_tipologies;
-        var val = sif && sif[fieldValue] ? sif[fieldValue] : fieldValue;
+        var strValue = ""+fieldValue;
+        //var val = sif && sif[fieldValue] ? sif[fieldValue] : fieldValue;
+        //return sif && sif[fieldValue] ? "("+fieldValue+") "+ sif[fieldValue] : fieldValue;
+
+        var val = strValue ? strValue[0]+"."+strValue.substr(1) : "";
+        return val;
+
         //console.log("tipologyFormat", fieldValue, val);
-        return sif && sif[fieldValue] ? "("+fieldValue+") "+ sif[fieldValue] : fieldValue;
+    };
+
+    var tipologyHintF = function(args) {
+        var fieldValue = args.field.getValue();
+        var sif = si4.initData.sif_tipologies;
+
+        if (!sif || !sif[fieldValue])
+            return;
+
+        var hint = sif[fieldValue];
+        console.log("tipologyHintF", hint);
+        si4.showHint(hint);
+        //return hint;
     };
 
     this.container = new si4.widget.si4Element({ parent: si4.data.contentElement, tagClass: "defContainer moduleSearch" });
@@ -48,16 +66,20 @@ si4.modules.search = function(args) {
         //tabPage: args.contentTab,
         fields: {
             ID: { caption: "Id" },
-            OpAvtor0: { caption: si4.translate("field_OpAvtor0"), canSort: true, canFilter: true },
-            OpNaslov: { caption: si4.translate("field_OpNaslov"), canSort: true, canFilter: true },
             OpTipologija: { caption: si4.translate("field_OpTipologija"), canSort: true, canFilter: true,
-                format: tipologyFormat, filterOptions: si4.initData.sif_tipologies },
-            PvLeto: { caption: si4.translate("field_PvLeto"), canSort: true, canFilter: true },
+                format: tipologyFormat, filterOptions: si4.initData.sif_tipologies,
+                filterClassName: "short", hintF: tipologyHintF },
+            authorsShort: { caption: si4.translate("field_OpAvtor0"), canSort: true, canFilter: true },
+            OpNaslov: { caption: si4.translate("field_OpNaslov"), canSort: true, canFilter: true },
+            PvLeto: { caption: si4.translate("field_PvLeto"), canSort: true, canFilter: true, width: 100, },
             PvKraj: { caption: si4.translate("field_PvKraj"), canSort: true, canFilter: true },
-            PvZalozba: { caption: si4.translate("field_PvZalozba"), canSort: true, canFilter: true },
-            OpJezik: { caption: si4.translate("field_OpJezik"), canSort: true, canFilter: true },
-            OpSistoryUrnId: { caption: si4.translate("field_OpSistoryUrnId"), canSort: true, canFilter: true },
-            PvCobId: { caption: si4.translate("field_PvCobId"), canSort: true, canFilter: true },
+            citatiCount: { caption: si4.translate("field_citatiCount"), canSort: true, canFilter: true },
+            citiranoCount: { caption: si4.translate("field_citiranoCount"), canSort: true, canFilter: true },
+
+            //PvZalozba: { caption: si4.translate("field_PvZalozba"), canSort: true, canFilter: true },
+            //OpJezik: { caption: si4.translate("field_OpJezik"), canSort: true, canFilter: true },
+            //OpSistoryUrnId: { caption: si4.translate("field_OpSistoryUrnId"), canSort: true, canFilter: true },
+            //PvCobId: { caption: si4.translate("field_PvCobId"), canSort: true, canFilter: true },
         },
         fieldOrder: "definedFields",
         showOnlyDefinedFields: true,
