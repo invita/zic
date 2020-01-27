@@ -15,6 +15,7 @@ Route::get('/', 'IndexController@index');
 
 Route::get('/search', 'SearchController@index');
 Route::get('/zic', 'ZicController@index');
+Route::get('/redirectCited', 'ZicController@redirectCited');
 //Route::get('/chart', 'ChartController@index');
 
 Route::post('/api', 'ApiController@index');

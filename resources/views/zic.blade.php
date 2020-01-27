@@ -32,7 +32,6 @@
         <div id="citatiToggleDiv">
 
             <table class="citati">
-
                 <thead>
                     <tr>
                         @foreach ($citatiFields as $cFieldName)
@@ -43,7 +42,7 @@
 
                 <tbody>
                     @foreach ($zic["citati"] as $citat)
-                        <tr>
+                        <tr onclick="location.href='/redirectCited?gtid={{ $citat["gtid"] }}&cid={{ $citat["cid"] }}'">
                         @foreach($citatiFields as $cFieldName)
                             <td>
                                 {{ isset($citat[$cFieldName]) && $citat[$cFieldName] ? $citat[$cFieldName] : "" }}
@@ -56,26 +55,51 @@
         </div>
 
 
-        <!--
-        @foreach ($zic["citati"] as $citat)
-            <div class="zicDetails citat">
-                @foreach($citatiFields as $cFieldName)
-                    @if ($citat[$cFieldName])
-                        <div class="attrRow row collapse">
-                            <span class="attrName large-2 medium-2 small-12 columns">{{ __("zic.field_".$cFieldName) }}:</span>
-                            <span class="attrValue large-10 medium-10 small-12 columns">{{ $citat[$cFieldName] }}</span>
-                        </div>
-                    @endif
-                @endforeach
-            </div>
-        @endforeach
-        -->
-
         <script>
             $(document).ready(function() {
                 $("#citatiToggleHandle").click(function() {
                     $("#citatiToggleHandle").toggleClass("active");
                     $("#citatiToggleDiv").slideToggle();
+                });
+            });
+        </script>
+
+    @endif
+
+
+    @if (isset($zic["citing"]) && $zic["citing"])
+        <h5 id="citingToggleHandle" class="active">Citirajo{{ isset($zic["citiranoCount"]) ? " (".$zic["citiranoCount"].")" : "" }}</h5>
+        <div id="citingToggleDiv">
+
+            <table class="citing">
+                <thead>
+                    <tr>
+                        @foreach ($citingFields as $cFieldName)
+                            <th>{{ __("zic.field_".$cFieldName) }}</th>
+                        @endforeach
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach ($zic["citing"] as $citing)
+                        <tr onclick="location.href='/zic?id={{ $citing["ID"] }}'">
+                        @foreach($citingFields as $cFieldName)
+                            <td>
+                                {{ isset($citing[$cFieldName]) && $citing[$cFieldName] ? $citing[$cFieldName] : "" }}
+                            </td>
+                        @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+
+        <script>
+            $(document).ready(function() {
+                $("#citingToggleHandle").click(function() {
+                    $("#citingToggleHandle").toggleClass("active");
+                    $("#citingToggleDiv").slideToggle();
                 });
             });
         </script>

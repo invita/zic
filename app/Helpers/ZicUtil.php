@@ -13,9 +13,9 @@ class ZicUtil
         "authorsLong",
         "OpNaslov",
         "tipologyLong",
-        "PvLeto",
         "PvKraj",
         "PvZalozba",
+        "PvLeto",
         "jezikLong",
         "PvNaslov",
         "PvLetnik",
@@ -33,6 +33,13 @@ class ZicUtil
         "kraj",
         "zalozba",
         "leto",
+    ];
+    public static $detailsViewCitingFields = [
+        "authorsLong",
+        "OpNaslov",
+        "PvKraj",
+        "PvZalozba",
+        "PvLeto",
     ];
 
     public static $tableViewFields = [

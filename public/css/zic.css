@@ -924,6 +924,7 @@ img.dlIco {
     margin: 5px;
     font-size: 0.875rem;
     */
+    font-size: 0.82rem;
     display: inline-table;
     font-weight: bold;
     padding-left: 5px !important;
@@ -932,6 +933,7 @@ img.dlIco {
     white-space: pre;
     line-height: 18px;
     padding: 4px;
+    font-size: 0.82rem;
     /*
     font-size: 0.875rem;
     */
@@ -942,12 +944,12 @@ img.dlIco {
 }
 
 /* Citati */
-#citatiToggleHandle {
+#citatiToggleHandle, #citingToggleHandle {
     cursor: pointer;
     position: relative;
     margin-left: 20px;
 }
-#citatiToggleHandle:after {
+#citatiToggleHandle:after, #citingToggleHandle:after {
     content: '';
     position: absolute;
     left: -20px;
@@ -959,14 +961,21 @@ img.dlIco {
     transform: rotate(-90deg);
     transition: transform 0.3s;
 }
-#citatiToggleHandle.active:after {
+#citatiToggleHandle.active:after, #citingToggleHandle.active:after {
     transform: rotate(0deg);
 }
 
-#pageHolder .citati * {
-    font-size: inherit;
+#pageHolder .citati *, #pageHolder .citing * {
+    /* font-size: inherit; */
+    font-size: 0.82rem;
 }
-.citati th {  }
+.citati th, .citing th {  }
+.citati tr, .citing tr {
+    cursor: pointer;
+}
+.citati tr:hover, .citing tr:hover {
+    background: #ddd;
+}
 
 
 

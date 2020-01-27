@@ -408,6 +408,76 @@ HERE;
         return $dataElastic;
     }
 
+    public static function searchZicByTitle($title) {
+        $query = [
+            "bool" => [
+                "must" => []
+            ]
+        ];
+
+        // Must match title
+        $query["bool"]["must"][] = [
+            "term" => [ "OpNaslov.keyword" => $title ]
+        ];
+
+        return self::search($query, 0, 1, null, "asc", null);
+
+    }
+
+    public static function searchCitingZics($originalZic)
+    {
+
+        //$originalZic["authors"] == $originalZic["citati"][$i]["citatiAuthors"]
+        //$originalZic["OpNaslov"] == $originalZic["citati"][$i]["naslov0"]
+
+
+
+        //
+
+        /*
+        $searchFields = [
+            "authors.IME",
+            "authors.PRIIMEK",
+            "OpNaslov",
+            "OpCobId",
+            "OpSistoryUrnId",
+            "PvISSN",
+        ];
+        */
+
+
+        $query = [
+            "bool" => [
+                "must" => []
+            ]
+        ];
+
+        // Must match title
+        $query["bool"]["must"][] = [
+            "term" => [ "citati.naslov0.keyword" => $originalZic["OpNaslov"] ]
+        ];
+
+        // Must match at least one author
+        /*
+        $authorsShould = [];
+        $authorsShould[] = [
+
+            "term" => [ "citati.citatiAuthors.IME.keyword" => $originalZic["OpNaslov"] ]
+        ]
+        $query["bool"]["must"][] = [
+            "bool" => [
+                "should" => $authorsShould,
+                "minimum_should_match" => 1
+            ]
+        ];
+        */
+
+        //print_r($query);
+
+        return self::search($query, 0, 9999, null, "asc", null);
+
+    }
+
 
     public static function suggestCreators($creatorTerm, $limit = 30)
     {
@@ -779,4 +849,5 @@ HERE;
         }
         return $result;
     }
+
 }
