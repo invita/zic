@@ -321,13 +321,54 @@ HERE;
         ];
 
         if ($filters) {
+            //$filters = self::mapFilterFilterFields($filters);
+            //print_r($filtersParsed);
             foreach ($filters as $fKey => $fVal) {
-                $must[] = [
-                    "query_string" => [
-                        "default_field" => $fKey,
-                        "query" => $fVal,
-                    ],
-                ];
+
+                switch ($fKey) {
+                    case "authorsShort":
+                    case "authorsLong":
+                        $must[] = [
+                            "query_string" => [
+                                "fields" => ["authors.IME", "authors.PRIIMEK"],
+                                "query" => join(" OR ", explode(" ", $fVal)),
+                            ],
+                        ];
+                        break;
+                    default:
+
+                        // Is Range query?
+                        if (strpos($fVal, "..") !== false) {
+                            $ltgt = explode("..", $fVal);
+                            $gt = isset($ltgt[0]) && $ltgt[0] ? trim($ltgt[0]) : null;
+                            $lt = isset($ltgt[1]) && $ltgt[1] ? trim($ltgt[1]) : null;
+
+                            $range = [];
+                            if ($gt) $range["gte"] = $gt;
+                            if ($lt) $range["lte"] = $lt;
+
+                            $must[] = [
+                                "range" => [
+                                    $fKey => $range
+                                ],
+                            ];
+                        } else {
+                            // Default
+
+                            // Replace whitespace with AND
+                            $fVal = join(" AND ", explode(" ", $fVal));
+                            // Replace , with OR
+                            $fVal = str_replace(",", " OR ", $fVal);
+
+                            $must[] = [
+                                "query_string" => [
+                                    "fields" => [$fKey],
+                                    "query" => $fVal,
+                                ],
+                            ];
+                        }
+                        break;
+                }
             }
         }
 
@@ -621,189 +662,6 @@ HERE;
             $str = mb_ereg_replace($skipChar, "", $str);
         }
         return $str;
-    }
-
-
-
-
-    public static function distinctDezela() {
-        $requestArgs = [
-            "index" => env("SI4_ELASTIC_ZIC_INDEX"),
-            "type" => env("SI4_ELASTIC_ZIC_DOCTYPE"),
-            "body" => [
-                "aggs" => [
-                    "uniq" => [
-                        "terms" => [ "field" => "DEZELA.keyword" ]
-                    ]
-                ],
-                "size" => 0,
-            ]
-        ];
-
-        $elasticResult = \Elasticsearch::connection()->search($requestArgs);
-        $result = [];
-        if (isset($elasticResult["aggregations"]) && isset($elasticResult["aggregations"]["uniq"])) {
-            $buckets = $elasticResult["aggregations"]["uniq"]["buckets"];
-            foreach ($buckets as $idx => $bucket) {
-                if (!$bucket["key"]) continue;
-                $result[] = $bucket["key"];
-            }
-        }
-        return $result;
-    }
-
-    public static function distinctObcina() {
-        $requestArgs = [
-            "index" => env("SI4_ELASTIC_ZIC_INDEX"),
-            "type" => env("SI4_ELASTIC_ZIC_DOCTYPE"),
-            "body" => [
-                "aggs" => [
-                    "uniq" => [
-                        "terms" => [ "field" => "OBCINA.keyword" ]
-                    ]
-                ],
-                "size" => 0,
-            ]
-        ];
-
-        $elasticResult = \Elasticsearch::connection()->search($requestArgs);
-        $result = [];
-        if (isset($elasticResult["aggregations"]) && isset($elasticResult["aggregations"]["uniq"])) {
-            $buckets = $elasticResult["aggregations"]["uniq"]["buckets"];
-            foreach ($buckets as $idx => $bucket) {
-                if (!$bucket["key"]) continue;
-                $result[] = $bucket["key"];
-            }
-        }
-        return $result;
-    }
-
-
-    public static function searchChartData($from, $to, $land, $munic) {
-
-        $fromYear = 1910;
-        $fromMonth = 0;
-        if ($from) {
-            $e = explode("-", $from);
-            $fromYear = intval($e[0]);
-            $fromMonth = intval($e[1]);
-        }
-
-        $toYear = 1920;
-        $toMonth = 12;
-        if ($to) {
-            $e = explode("-", $to);
-            $toYear = intval($e[0]);
-            $toMonth = intval($e[1]);
-        }
-
-        $requestArgs = [
-            "index" => env("SI4_ELASTIC_ZIC_INDEX"),
-            "type" => env("SI4_ELASTIC_ZIC_DOCTYPE"),
-            "body" => [
-                "aggs" => [
-                    "year" => [
-                        "terms" => [ "field" => "SMRT_LETO" ],
-                        "aggs" => [
-                            "month" => [
-                                "terms" => [ "field" => "SMRT_MESEC" ],
-                            ]
-                        ]
-                    ]
-                ],
-                "size" => 0,
-            ]
-        ];
-
-
-        $mainBool = [
-            "bool" => [
-                "must" => [
-                    // From
-                    [
-                        "bool" => [
-                            "should" => [ // Either SMRT_LETO > $fromYear
-                                ["range" => [
-                                    "SMRT_LETO" => [
-                                        "gt" => $fromYear,
-                                    ]
-                                ]],
-                                ["bool" => [ // Or SMRT_LETO >= $fromYear AND SMRT_MESEC >= $fromMonth
-                                    "must" => [
-                                        ["range" => [
-                                            "SMRT_LETO" => [
-                                                "gte" => $fromYear,
-                                            ]
-                                        ]],
-                                        ["range" => [
-                                            "SMRT_MESEC" => [
-                                                "gte" => $fromMonth,
-                                            ]
-                                        ]],
-                                    ]
-                                ]],
-                            ],
-                            "minimum_should_match" => 1
-                        ]
-                    ],
-                    // To
-                    [
-                        "bool" => [
-                            "should" => [ // Either SMRT_LETO < $toYear
-                                ["range" => [
-                                    "SMRT_LETO" => [
-                                        "lt" => $toYear,
-                                    ]
-                                ]],
-                                ["bool" => [ // Or SMRT_LETO >= $fromYear AND SMRT_MESEC >= $fromMonth
-                                    "must" => [
-                                        ["range" => [
-                                            "SMRT_LETO" => [
-                                                "lte" => $toYear,
-                                            ]
-                                        ]],
-                                        ["range" => [
-                                            "SMRT_MESEC" => [
-                                                "lte" => $toMonth,
-                                            ]
-                                        ]],
-                                    ]
-                                ]],
-                            ],
-                            "minimum_should_match" => 1
-                        ]
-                    ],
-                ],
-            ]
-        ];
-
-        if ($land) {
-            $mainBool["bool"]["must"][] = ["term" => [ "DEZELA.keyword" => $land ]];
-        }
-
-        if ($munic) {
-            $mainBool["bool"]["must"][] = ["term" => [ "OBCINA.keyword" => $munic ]];
-        }
-
-        $requestArgs["body"]["query"] = $mainBool;
-
-        $elasticResult = \Elasticsearch::connection()->search($requestArgs);
-        //print_r($elasticResult);
-        $result = [];
-        if (isset($elasticResult["aggregations"]) && isset($elasticResult["aggregations"]["year"])) {
-            $yearBuckets = $elasticResult["aggregations"]["year"]["buckets"];
-            foreach ($yearBuckets as $yIdx => $yearBucket) {
-                if (!$yearBucket["key"]) continue;
-                $year = $yearBucket["key"];
-                $monthBuckets = $yearBucket["month"]["buckets"];
-                foreach ($monthBuckets as $mIdx => $monthBucket) {
-                    $month = str_pad($monthBucket["key"], 2, "0", STR_PAD_LEFT);
-                    $result[$year."-".$month] = $monthBucket["doc_count"];
-                }
-            }
-        }
-
-        return $result;
     }
 
 

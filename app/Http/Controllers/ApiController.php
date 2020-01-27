@@ -95,7 +95,6 @@ class ApiController extends Controller
         return response(json_encode($result))->header('Content-Type', 'application/json');
     }
 
-
     private static function countMatchingChars($str1, $str2) {
         $len1 = mb_strlen($str1);
         $len2 = mb_strlen($str2);

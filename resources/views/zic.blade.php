@@ -28,8 +28,8 @@
 
 
     @if (isset($zic["citati"]) && $zic["citati"])
-        <h5 id="citatiToggleHandle" class="active">Citati{{ isset($zic["citatiCount"]) ? " (".$zic["citatiCount"].")" : "" }}</h5>
-        <div id="citatiToggleDiv">
+        <h5 id="citatiToggleHandle" class="">Citati{{ isset($zic["citatiCount"]) ? " (".$zic["citatiCount"].")" : "" }}</h5>
+        <div id="citatiToggleDiv"style="display:none;">
 
             <table class="citati">
                 <thead>
@@ -68,8 +68,8 @@
 
 
     @if (isset($zic["citing"]) && $zic["citing"])
-        <h5 id="citingToggleHandle" class="active">Citirajo{{ isset($zic["citiranoCount"]) ? " (".$zic["citiranoCount"].")" : "" }}</h5>
-        <div id="citingToggleDiv">
+        <h5 id="citingToggleHandle" class="">Citirano{{ isset($zic["citiranoCount"]) ? " (".$zic["citiranoCount"].")" : "" }}</h5>
+        <div id="citingToggleDiv" style="display:none;">
 
             <table class="citing">
                 <thead>

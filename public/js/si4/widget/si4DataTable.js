@@ -375,7 +375,7 @@ si4.widget.si4DataTable = function(args)
             if (_p.dataSource.sortField) params["sort"] = _p.dataSource.sortField; else delete params["sort"];
             if (_p.dataSource.sortOrder) params["order"] = _p.dataSource.sortOrder; else delete params["order"];
             if (Object.keys(_p.dataSource.filter).length) {
-                params["filter"] = btoa(JSON.stringify(_p.dataSource.filter));
+                params["filter"] = btoa(encodeURIComponent(JSON.stringify(_p.dataSource.filter)));
             } else {
                 delete params["filter"];
             }
@@ -768,7 +768,7 @@ si4.widget.si4DataTable = function(args)
                     if (params["sort"]) _p.dataSource.sortField = params["sort"];
                     if (params["order"]) _p.dataSource.sortOrder = params["order"];
                     if (params["filter"]) {
-                        var filter = JSON.parse(atob(params["filter"]));
+                        var filter = JSON.parse(decodeURIComponent(atob(params["filter"])));
                         _p.dataSource.filter = filter;
                         _p.filter.visible = true;
                     }
