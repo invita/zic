@@ -19,15 +19,9 @@ class IndexController extends LayoutController
         else
             $contentHtml = ContentBuilder::getHtmlForFirstPage();
 
-        $froms = ChartController::dateInterval($lang, '1914-01', '1918-12');
-        $tos = ChartController::dateInterval($lang, '1914-01', '1918-12');
-        $chartDataElastic = ElasticHelpers::searchChartData(null, null, null, null);
-        $chartData = ChartController::fillMissingKeysAndSort(null, null, $froms, $tos, $chartDataElastic);
-
         $viewData = $this->getLayoutData($request, [
             "zics" => [],
             "contentHtml" => $contentHtml,
-            "chartData" => $chartData,
         ]);
 
         return view('index', $viewData);
