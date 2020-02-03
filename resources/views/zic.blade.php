@@ -11,11 +11,15 @@
         @foreach($fields as $fieldName)
             @if ($zic[$fieldName])
                 <div class="attrRow row collapse">
-                    <span class="attrName large-2 medium-2 small-12 columns">{{ __("zic.field_".$fieldName) }}:</span>
+                    <div class="attrName large-2 medium-2 small-12 columns">{{ __("zic.field_".$fieldName) }}:</div>
                     @if (isset($zic[$fieldName."_link"]))
-                        <span class="attrValue large-10 medium-10 small-12 columns"><a href="{{ $zic[$fieldName."_link"] }}">{{ $zic[$fieldName] }}</a></span>
+                        <div class="attrValue large-10 medium-10 small-12 columns"><a href="{{ $zic[$fieldName."_link"] }}">{{ $zic[$fieldName] }}</a></div>
+                    @elseif ($fieldName === "oneline")
+                        <div class="attrValue large-10 medium-10 small-12 columns copyOnClick">
+                            <input type="text" value="{{ $zic[$fieldName] }}" />
+                        </div>
                     @else
-                        <span class="attrValue large-10 medium-10 small-12 columns">{{ $zic[$fieldName] }}</span>
+                        <div class="attrValue large-10 medium-10 small-12 columns">{{ $zic[$fieldName] }}</div>
                     @endif
                 </div>
             @endif
@@ -28,7 +32,7 @@
 
 
     @if (isset($zic["citati"]) && $zic["citati"])
-        <h5 id="citatiToggleHandle" class="">Citati{{ isset($zic["citatiCount"]) ? " (".$zic["citatiCount"].")" : "" }}</h5>
+        <h5 id="citatiToggleHandle" class="">{{ __("zic.field_citati") }}{{ isset($zic["citatiCount"]) ? " (".$zic["citatiCount"].")" : "" }}</h5>
         <div id="citatiToggleDiv"style="display:none;">
 
             <table class="citati">
@@ -68,7 +72,7 @@
 
 
     @if (isset($zic["citing"]) && $zic["citing"])
-        <h5 id="citingToggleHandle" class="">Citirano{{ isset($zic["citiranoCount"]) ? " (".$zic["citiranoCount"].")" : "" }}</h5>
+        <h5 id="citingToggleHandle" class="">{{ __("zic.field_citirano") }}{{ isset($zic["citiranoCount"]) ? " (".$zic["citiranoCount"].")" : "" }}</h5>
         <div id="citingToggleDiv" style="display:none;">
 
             <table class="citing">
@@ -100,6 +104,17 @@
                 $("#citingToggleHandle").click(function() {
                     $("#citingToggleHandle").toggleClass("active");
                     $("#citingToggleDiv").slideToggle();
+                });
+
+                $(".copyOnClick").click(function() {
+                    var input = $(this).find("input")[0];
+                    input.select();
+                    input.setSelectionRange(0, 99999);
+                    document.execCommand("copy");
+                    console.log("Copied to clipboard.");
+                    var div = $(this);
+                    div.addClass("copied");
+                    setTimeout(function() { div.removeClass("copied") }, 3000);
                 });
             });
         </script>

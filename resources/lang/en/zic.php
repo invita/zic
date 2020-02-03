@@ -40,8 +40,12 @@ return [
     'field_PvSt' => 'Number',
     'field_OpSistoryUrnId' => 'Sistory Id',
     'field_PvCobId' => 'Cobiss Id',
-    'field_CitatiCount' => 'Citation count',
-    'field_CitiranoCount' => 'Cited',
+    'field_oneline' => 'Copy friendly',
+    'field_citatiCount' => 'Reference count',
+    'field_citiranoCount' => 'Citation count',
+    'field_citati' => 'References',
+    'field_citirano' => 'Citations',
+
 
     // Citati Fields
     'field_str' => 'Stran',
@@ -56,7 +60,7 @@ return [
     'text_searchString' => 'Search victims. You may use wildcard *, i.e. Jane*',
     'text_sistory' => 'SISTORY - History of Slovenia',
     'text_newsletterSignup' => 'Singup to newsletter',
-    'text_vsiZic' => 'All citations',
+    'text_vsiZic' => 'All documents',
     'text_back' => 'Back',
     'text_downloadPdf' => 'Download PDF',
 

@@ -39,6 +39,11 @@ class ApiController extends Controller
         $sortField = isset($inputJson["sortField"]) ? $inputJson["sortField"] : null;
         $sortOrder = isset($inputJson["sortOrder"]) ? $inputJson["sortOrder"] : "asc";
 
+        if ($sortField) {
+            if (isset(ZicUtil::$fieldsSortMap[$sortField]))
+                $sortField = ZicUtil::$fieldsSortMap[$sortField];
+        }
+
         $filter = $inputJson["filter"];
 
         $zics = [];

@@ -40,8 +40,11 @@ return [
     'field_PvSt' => 'Številka',
     'field_OpSistoryUrnId' => 'Sistory Id',
     'field_PvCobId' => 'Cobiss Id',
-    'field_citatiCount' => 'Št. citatov',
-    'field_citiranoCount' => 'Citirano',
+    'field_oneline' => 'Kopiranju prijazno',
+    'field_citatiCount' => 'Št. referenc',
+    'field_citiranoCount' => 'Št. citatov',
+    'field_citati' => 'Reference navedene v delu',
+    'field_citirano' => 'Citirano v',
 
     // Citati Fields
     'field_str' => 'Stran',
@@ -56,7 +59,7 @@ return [
     'text_searchString' => 'Vpišite iskalni niz. Uporabljate lahko *, npr. Jane*',
     'text_sistory' => 'Zgodovina Slovenije - SIstory',
     'text_newsletterSignup' => 'Prijava na novice',
-    'text_vsiZic' => 'Vsi citati',
+    'text_vsiZic' => 'Vsa dela',
     'text_back' => 'Nazaj',
     'text_downloadPdf' => 'Prenesi PDF',
 

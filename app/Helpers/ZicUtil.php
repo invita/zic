@@ -22,8 +22,9 @@ class ZicUtil
         "PvSt",
         "OpSistoryUrnId",
         "PvCobId",
+        "oneline",
+        "citatiCount",
         "citiranoCount",
-        "citatiCount"
     ];
     public static $detailsViewCitatiFields = [
         "str",
@@ -35,6 +36,7 @@ class ZicUtil
         "leto",
     ];
     public static $detailsViewCitingFields = [
+        "tipologyLong",
         "authorsLong",
         "OpNaslov",
         "PvKraj",
@@ -49,9 +51,44 @@ class ZicUtil
         "OpNaslov",
         "PvLeto",
         "citatiCount",
-        "citiranoCount"
+        "citiranoCount",
     ];
 
+    public static $tableViewFieldsPDF = [
+        "ID",
+        "tipologyLong",
+        "authorsShort",
+        "OpNaslov",
+        "PvLeto",
+        "citatiCount",
+        "citiranoCount",
+    ];
+
+    public static $fieldsSortMap = [
+        "authorsShort" => "authors.PRIIMEK.keyword",
+        "authorsLong" => "authors.PRIIMEK.keyword",
+        "tipologyShort" => "OpTipologija",
+        "tipologyLong" => "OpTipologija",
+        "jezikShort" => "OpJezik",
+        "jezikLong" => "OpJezik",
+        "OpNaslov" => "OpNaslov.keyword",
+        "PvKraj" => "PvKraj.keyword",
+    ];
+
+    private static function getAuthorName($author) {
+        $ime = Si4Util::getArg($author, "IME", "");
+        $priimek = Si4Util::getArg($author, "PRIIMEK", "");
+
+        $priimekAndIme = "";
+        if ($ime && $priimek) {
+            $priimekAndIme = $priimek.", ".$ime;
+        } else if ($ime) {
+            $priimekAndIme = $ime;
+        } else if ($priimek) {
+            $priimekAndIme = $priimek;
+        }
+        return $priimekAndIme;
+    }
 
     public static function zicDisplay($zicRecord) {
 
@@ -69,18 +106,7 @@ class ZicUtil
         if (isset($zicRecord["authors"]) && $zicRecord["authors"]) {
 
             foreach ($zicRecord["authors"] as $author) {
-                $ime = Si4Util::getArg($author, "IME", "");
-                $priimek = Si4Util::getArg($author, "PRIIMEK", "");
-
-                $priimekAndIme = "";
-                if ($ime && $priimek) {
-                    $priimekAndIme = $priimek.", ".$ime;
-                } else if ($ime) {
-                    $priimekAndIme = $ime;
-                } else if ($priimek) {
-                    $priimekAndIme = $priimek;
-                }
-
+                $priimekAndIme = self::getAuthorName($author);
                 if (!$zicRecord["authorsShort"]) $zicRecord["authorsShort"] = $priimekAndIme;
 
                 if ($zicRecord["authorsLong"]) $zicRecord["authorsLong"] .= " ;\n";
@@ -128,7 +154,66 @@ class ZicUtil
             $zicRecord["PvCobId_link"] = "http://www.cobiss.si/scripts/cobiss?command=DISPLAY&base=cobib&rid=".$zicRecord["PvCobId"];
         }
 
+        $zicRecord["oneline"] = self::zicDisplay_oneline($zicRecord);
+
         return $zicRecord;
+    }
+
+    public static function zicDisplay_oneline($zicRecord) {
+
+        $typeV2 = Si4Util::getArg($zicRecord, "TypeV2", null);
+
+
+        $firstAuthor = Si4Util::pathArg($zicRecord, "authors/0", null);
+        $author = self::getAuthorName($firstAuthor);
+
+        $naslov = Si4Util::pathArg($zicRecord, "OpNaslov", null);
+        $naslovVira = Si4Util::pathArg($zicRecord, "PvNaslov", null);
+
+        $kraj = Si4Util::pathArg($zicRecord, "PvKraj", null);
+        $zalozba = Si4Util::pathArg($zicRecord, "PvZalozba", null);
+
+        $leto = Si4Util::pathArg($zicRecord, "PvLeto", null);
+        $letnik = Si4Util::pathArg($zicRecord, "PvLetnik", null);
+        $st = Si4Util::pathArg($zicRecord, "PvSt", null);
+        $stran = Si4Util::pathArg($zicRecord, "PvStran", null);
+        $issn = Si4Util::pathArg($zicRecord, "PvISSN", null);
+        $cobissId = Si4Util::pathArg($zicRecord, "PvCobId", null);
+        $sistoryId = Si4Util::pathArg($zicRecord, "OpSistoryUrnId", null);
+
+        $arr = [];
+
+        switch ($typeV2) {
+            case "serial":
+                // Priimek, Ime. Naslov. Naslov vira. Leto, letn. XX., št. XX, str. XX-XX. ISSN XXXX. COBISS ID XXXXX
+                if ($author) $arr[] = $author.". ";
+                if ($naslov) $arr[] = $naslov.". ";
+                if ($naslovVira) $arr[] = $naslovVira.". ";
+                if ($leto) $arr[] = $leto;
+                if ($letnik) $arr[] = ", letn. ".$letnik.".";
+                if ($st) $arr[] = ", št. ".$st;
+                if ($stran) $arr[] = ", str. ".$stran;
+                if ($issn) $arr[] = " ISSN ".$issn.".";
+                if ($cobissId) $arr[] = " COBISS ID: ".$cobissId;
+                return trim(join("", $arr));
+            case "mono":
+                // Priimek, Ime. Naslov. Naslov vira (če je zbornik). Kraj: Založba, Leto. ISBN XXXX. COBISS ID: XXXXXX
+                if ($author) $arr[] = $author.". ";
+                if ($naslov) $arr[] = $naslov.". ";
+                if ($naslovVira) $arr[] = $naslovVira.". ";
+                if ($kraj && $zalozba) {
+                    $arr[] = $kraj.": ".$zalozba;
+                } else {
+                    if ($kraj) $arr[] = $kraj;
+                    if ($zalozba) $arr[] = $zalozba;
+                }
+                if ($leto) $arr[] = ", ".$leto.".";
+                if ($issn) $arr[] = " ISBN ".$issn.".";
+                if ($cobissId) $arr[] = " COBISS ID: ".$cobissId;
+                return trim(join("", $arr));
+            default:
+                return "";
+        }
     }
 
     public static function zicsDisplay($zicRecords) {

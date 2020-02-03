@@ -60,10 +60,8 @@ class FileController extends Controller
 
         $filterParams = [];
         if ($filter) {
-            $filterParams = json_decode(base64_decode($filter), true);
+            $filterParams = json_decode(urldecode(base64_decode($filter)), true);
         }
-
-        //print_r($filterParams);
 
         $zicsElastic = ElasticHelpers::searchString($q, $filterParams, 0, 100);
         $zics = ZicUtil::zicsDisplay(ElasticHelpers::elasticResultToSimpleArray($zicsElastic));
@@ -76,7 +74,7 @@ class FileController extends Controller
                 $html .= '<h4>'.__("zic.pdf_title").': '.$zic["ID"].'</h4>';
 
                 $idx = 0;
-                foreach (ZicUtil::$tableViewFields as $key) {
+                foreach (ZicUtil::$tableViewFieldsPDF as $key) {
                     $val = isset($zic[$key]) ? $zic[$key] : null;
                     if (!$val) continue;
 
