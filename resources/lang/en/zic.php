@@ -8,6 +8,9 @@ return [
     'mainTabs_pop' => 'Census',
     'mainTabs_zic' => 'ZIC',
 
+    'title_zic' => 'Publication',
+    'title_cit' => 'Reference',
+
     // Datatable Widget
     'dataTable_noData' => 'No table data',
     'dataTable_navFirst' => 'First',
@@ -48,19 +51,26 @@ return [
 
 
     // Citati Fields
-    'field_str' => 'Stran',
-    'field_naslov0' => 'Naslov',
+    'field_str' => 'Page',
+    'field_cnastrani' => 'Cited on page',
+    'field_naslov0' => 'Title',
     'field_avtor0' => 'Author',
-    'field_vir' => 'Vir',
-    'field_kraj' => 'Kraj',
-    'field_zalozba' => 'Založba',
-    'field_leto' => 'Leto',
+    'field_vir' => 'Source',
+    'field_kraj' => 'Location',
+    'field_zalozba' => 'Publisher',
+    'field_letnik' => 'Year (letnik)',
+    'field_leto' => 'Year',
+    'field_zapSt' => 'Num.',
+    'field_citatiAuthorsShort' => 'Author(s)',
+    'field_citatiAuthorsLong' => 'Author(s)',
+    'field_zicCompressed' => 'Reference in the publication',
 
     // Text
     'text_searchString' => 'Search victims. You may use wildcard *, i.e. Jane*',
     'text_sistory' => 'SISTORY - History of Slovenia',
     'text_newsletterSignup' => 'Singup to newsletter',
     'text_vsiZic' => 'All documents',
+    'text_vsiCitati' => 'All references',
     'text_back' => 'Back',
     'text_downloadPdf' => 'Download PDF',
 
@@ -80,4 +90,11 @@ return [
 
     // PDF report
     'pdf_title' => 'Citation',
+
+    'filter_hint' => '<b style="color:#8e130b">About filter usage:</b><br>'.
+        'To narrow down table result set, type words into column fields.<br>'.
+        '<b>Wildcard *</b> - Use asterisk to complete words. i.e. "Nat*" will match both Natalie and National.<br>'.
+        '<b>Enumeration ,</b> - Use comma to enumerate more words or numbers that should be matched and returned into result set.<br>'.
+        '<b>Numeric range ..</b> - Two dots are used to range numeric values. i.e. "2010.." will result in all numbers greater than 2010. Range can also be closed, like "1..100"<br>',
+
 ];

@@ -8,6 +8,9 @@ return [
     'mainTabs_pop' => 'Popisi',
     'mainTabs_zic' => 'ZIC',
 
+    'title_zic' => 'Publikacija',
+    'title_cit' => 'Referenca',
+
     // Datatable Widget
     'dataTable_noData' => 'Tabela je prazna',
     'dataTable_navFirst' => 'Prvi',
@@ -48,18 +51,25 @@ return [
 
     // Citati Fields
     'field_str' => 'Stran',
+    'field_cnastrani' => 'Citat na strani',
     'field_naslov0' => 'Naslov',
     'field_avtor0' => 'Avtor',
     'field_vir' => 'Vir',
     'field_kraj' => 'Kraj',
     'field_zalozba' => 'Založba',
+    'field_letnik' => 'Letnik',
     'field_leto' => 'Leto',
+    'field_zapSt' => 'Zap. št.',
+    'field_citatiAuthorsShort' => 'Avtor(ji)',
+    'field_citatiAuthorsLong' => 'Avtor(ji)',
+    'field_zicCompressed' => 'Referenca navedena v delu',
 
     // Text
     'text_searchString' => 'Vpišite iskalni niz. Uporabljate lahko *, npr. Jane*',
     'text_sistory' => 'Zgodovina Slovenije - SIstory',
     'text_newsletterSignup' => 'Prijava na novice',
     'text_vsiZic' => 'Vsa dela',
+    'text_vsiCitati' => 'Vse reference',
     'text_back' => 'Nazaj',
     'text_downloadPdf' => 'Prenesi PDF',
 
@@ -79,5 +89,11 @@ return [
 
     // PDF report
     'pdf_title' => 'Citat',
+
+    'filter_hint' => '<b style="color:#8e130b">O uporabi filtra:</b><br>'.
+        'V okenca polj vpišite besede, da zožite seznam zadetkov v tabeli.<br>'.
+        '<b>Dopolnilna *</b> - Z uporabo zvezdico iskalnik skuša nadaljevati besedo. Npr. "Mar*" bo ustrezalo iskanju Marko in Marjan.<br>'.
+        '<b>Naštevanje ,</b> - Z vejico lahko naštevate več iskalnih besed ali števil<br>'.
+        '<b>Številčno omejevanje ..</b> - Z dvema pikama lahko omejite številske vrednosti. Npr. "2010.." najde vse številke, večje od 2010. Omejitev je lahko obojestranska. Npr. "1..100"<br>',
 
 ];

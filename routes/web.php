@@ -14,7 +14,9 @@
 Route::get('/', 'IndexController@index');
 
 Route::get('/search', 'SearchController@index');
+Route::get('/searchc', 'SearchCitController@index');
 Route::get('/zic', 'ZicController@index');
+Route::get('/cit', 'CitController@index');
 Route::get('/redirectCited', 'ZicController@redirectCited');
 //Route::get('/chart', 'ChartController@index');
 
@@ -22,6 +24,7 @@ Route::post('/api', 'ApiController@index');
 Route::post('/api/initialData', 'ApiController@initialData');
 Route::post('/api/dictionary', 'ApiController@dictionary');
 Route::post('/api/search', 'ApiController@search');
+Route::post('/api/searchc', 'ApiController@searchc');
 
 Route::get('/api/searchSuggest', 'ApiController@searchSuggest');
 

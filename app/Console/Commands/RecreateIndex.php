@@ -39,8 +39,10 @@ class RecreateIndex extends Command
     public function handle()
     {
         if ($this->confirm('Are you sure you wish to recreate zic index?', true)) {
-            ElasticHelpers::recreateIndex();
+            ElasticHelpers::recreateIndexZic();
             $this->info("Index '".env("SI4_ELASTIC_ZIC_INDEX", "zic")."' recreated");
+            ElasticHelpers::recreateIndexCitat();
+            $this->info("Index '".env("SI4_ELASTIC_CITAT_INDEX", "citat")."' recreated");
         }
     }
 }

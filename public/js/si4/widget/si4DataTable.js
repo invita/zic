@@ -40,9 +40,10 @@ si4.widget.si4DataTable = function(args)
     this.canExportXls = si4.getArg(args, "canExportXls", false);
     this.canExportCsv = si4.getArg(args, "canExportCsv", false);
     this.canExportPdf = si4.getArg(args, "canExportPdf", false);
-    this.filterHint = si4.getArg(args, "filterHint", true);
+    this.filterHint = si4.getArg(args, "filterHint", "");
     this.customControlls = si4.getArg(args, "customControlls", null);
     this.replaceUrlPagination = si4.getArg(args, "replaceUrlPagination", false);
+    this.consoleDebug = si4.getArg(args, "consoleDebug", true);
 
     this.rowsPerPage = si4.getArg(args, "rowsPerPage", si4.defaults.dataTableRowsPerPage); // Ignored if dataSource is given
 
@@ -137,7 +138,7 @@ si4.widget.si4DataTable = function(args)
         if (!_p.bluePrint || _p.bluePrint.noData) {
 
         } else {
-            console.log("_p.bluePrint.fields", _p.bluePrint.fields);
+            if (this.consoleDebug) console.log("dataTable _p.bluePrint.fields", _p.bluePrint.fields);
             for (var fieldKey in _p.bluePrint.fields) {
                 var fieldBP = _p.bluePrint.fields[fieldKey];
                 _p.headerRow.addField(fieldBP.fieldKey, fieldBP.fieldLabel, fieldBP);
@@ -345,6 +346,7 @@ si4.widget.si4DataTable = function(args)
             _p[cpName].filterSpan = new si4.widget.si4Element({parent:_p[cpName].filterDiv.selector, tagName:"span", tagClass:"vmid"});
             _p[cpName].filterSpan.selector.html("Filter");
             _p[cpName].filterDiv.selector.click(function(){ _p.toggleFilter(); });
+            if (this.filterHint) _p[cpName].filterDiv.setHint(this.filterHint);
         }
 
         if (_p.customControlls) {
@@ -650,7 +652,7 @@ si4.widget.si4DataTable = function(args)
     };
 
     this.reconstruct = function(args){
-        console.log("dataTable reconstruct");
+        if (this.consoleDebug) console.log("dataTable reconstruct");
         _p.bluePrint = _p.createBluePrintFromData(args.data);
         if (_p.bluePrint.modified || !_p.constructed) {
             _p.createTable();
@@ -668,7 +670,7 @@ si4.widget.si4DataTable = function(args)
     };
 
     this.setPaginator = function(rowCount) {
-        console.log("setPaginator", rowCount);
+        if (this.consoleDebug) console.log("dataTable setPaginator", rowCount);
         if (!rowCount) return;
         if (!_p.dsControl) return;
         if (!_p.dsControlBottom) return;
@@ -723,7 +725,7 @@ si4.widget.si4DataTable = function(args)
 
     this.feedData = function(args) {
 
-        console.log("feedData", args);
+        if (this.consoleDebug) console.log("dataTable feedData", args);
         _p.trigger('dataFeed', args);
 
         _p.reconstruct(args);

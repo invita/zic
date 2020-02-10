@@ -43,7 +43,8 @@ class ReindexZics extends Command
 
         if ($this->confirm('Are you sure you wish to reindex all zic citations?', true)) {
 
-            ElasticHelpers::recreateIndex();
+            ElasticHelpers::recreateIndexZic();
+            ElasticHelpers::recreateIndexCitat();
 
             $zics = Zic::all();
 

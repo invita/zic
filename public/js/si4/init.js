@@ -36,8 +36,17 @@ $(document).ready(function() {
             $("#searchFormZic").submit(function(e) {
                 e.preventDefault();
                 var q = $("#searchInput").val();
+                var t = $("#searchType").val();
                 if (q) {
-                    si4.navigation.switchPage("search", { q: q });
+                    switch (t) {
+                        case "zic":default:
+                            si4.navigation.switchPage("search", { q: q });
+                            break;
+                        case "cit":
+                            si4.navigation.switchPage("searchc", { q: q });
+                            break;
+                    }
+
                 }
             });
 

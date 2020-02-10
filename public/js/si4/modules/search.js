@@ -86,6 +86,7 @@ si4.modules.search = function(args) {
         maxRecordCount: 10000,
         replaceUrlPagination: true,
         canExportPdf: true,
+        filterHint: si4.translate("filter_hint"),
         //cssClass_table: "si4DataTable_table width100percent"
     });
 };

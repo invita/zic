@@ -3,6 +3,9 @@
 @section("content")
 
 <div id="initView">
+
+    <h5 style="float:left;">{{ __("zic.title_zic") }} {{ $zicId }}</h5>
+
     <div class="zicCDiv">
         <a class="zicPdfButton noHover" href="/zicPdf?id={{$zicId}}" target="_blank"><img src="/img/icon/pdf.png" class="imgPdf"></a>
     </div>
@@ -46,7 +49,11 @@
 
                 <tbody>
                     @foreach ($zic["citati"] as $citat)
-                        <tr onclick="location.href='/redirectCited?gtid={{ $citat["gtid"] }}&cid={{ $citat["cid"] }}'">
+                        <?php
+                        //<tr onclick="location.href='/redirectCited?gtid={{ $citat["gtid"] }}&cid={{ $citat["cid"] }}'">
+                        ?>
+
+                        <tr onclick="location.href='/cit?zid={{ $citat["gtid"] }}&cid={{ $citat["cid"] }}'">
                         @foreach($citatiFields as $cFieldName)
                             <td>
                                 {{ isset($citat[$cFieldName]) && $citat[$cFieldName] ? $citat[$cFieldName] : "" }}

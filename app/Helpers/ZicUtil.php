@@ -64,6 +64,19 @@ class ZicUtil
         "citiranoCount",
     ];
 
+    public static $citDetailsFields = [
+        "COBISSid",
+        "cnastrani",
+        "citatiAuthorsLong",
+        "naslov0",
+        "vir",
+        "kraj",
+        "zalozba",
+        "letnik",
+        "leto",
+        "str",
+    ];
+
     public static $fieldsSortMap = [
         "authorsShort" => "authors.PRIIMEK.keyword",
         "authorsLong" => "authors.PRIIMEK.keyword",
@@ -74,6 +87,21 @@ class ZicUtil
         "OpNaslov" => "OpNaslov.keyword",
         "PvKraj" => "PvKraj.keyword",
     ];
+
+    public static $citFieldsSortMap = [
+        "zapSt" => "gtid",
+        "citatiAuthorsShort" => "citatiAuthors.PRIIMEK.keyword",
+        "citatiAuthorsLong" => "citatiAuthors.PRIIMEK.keyword",
+        "naslov0" => "naslov0.keyword",
+        "vir" => "vir.keyword",
+        "kraj" => "kraj.keyword",
+        "zalozba" => "zalozba.keyword",
+        "zicCompressed" => "zic.OpNaslov.keyword",
+    ];
+
+    public static function citElasticId($zicId, $cid) {
+        return $zicId * 1000000 + $cid;
+    }
 
     private static function getAuthorName($author) {
         $ime = Si4Util::getArg($author, "IME", "");
@@ -89,6 +117,9 @@ class ZicUtil
         }
         return $priimekAndIme;
     }
+
+
+    // *** Zic ***
 
     public static function zicDisplay($zicRecord) {
 
@@ -222,6 +253,58 @@ class ZicUtil
         }
         return $zicRecords;
     }
+
+
+    // *** Citati ***
+
+    public static function citDisplay($citRecord) {
+
+        if (!$citRecord) return null;
+
+        $citRecord["citatiAuthorsShort"] = "";
+        $citRecord["citatiAuthorsLong"] = "";
+
+        // Prepare authors
+        if (isset($citRecord["citatiAuthors"]) && $citRecord["citatiAuthors"]) {
+
+            foreach ($citRecord["citatiAuthors"] as $author) {
+                $priimekAndIme = self::getAuthorName($author);
+                if (!$citRecord["citatiAuthorsShort"]) $citRecord["citatiAuthorsShort"] = $priimekAndIme;
+
+                if ($citRecord["citatiAuthorsLong"]) $citRecord["citatiAuthorsLong"] .= " ;\n";
+                $citRecord["citatiAuthorsLong"] .= $priimekAndIme;
+            }
+        }
+
+        // Sistory Link
+        if (isset($citRecord["sistoryId"])) {
+            $citRecord["sistoryId_link"] = "https://www.sistory.si/11686/".$citRecord["sistoryId"];
+        }
+
+        // Cobiss Link
+        if (isset($citRecord["COBISSid"])) {
+            $citRecord["COBISSid_link"] = "http://www.cobiss.si/scripts/cobiss?command=DISPLAY&base=cobib&rid=".$citRecord["COBISSid"];
+        }
+
+        $citRecord["citElasticId"] = self::citElasticId($citRecord["gtid"], $citRecord["cid"]);
+        $citRecord["zapSt"] = $citRecord["gtid"]."/".$citRecord["cid"];
+
+        $citRecord["zicCompressed"] = self::zicDisplay_oneline($citRecord["zic"]);
+        $citRecord["zicTitle"] = Si4Util::pathArg($citRecord, "zic/OpNaslov", "");
+        $citRecord["zicLink"] = "/zic?id=".$citRecord["gtid"];
+
+        //$citRecord["oneline"] = self::zicDisplay_oneline($citRecord);
+
+        return $citRecord;
+    }
+
+    public static function citsDisplay($citRecords) {
+        foreach ($citRecords as $idx => $citRecord) {
+            $citRecords[$idx] = self::citDisplay($citRecord);
+        }
+        return $citRecords;
+    }
+
 }
 
 

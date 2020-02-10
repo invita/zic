@@ -68,6 +68,10 @@ class ReindexZic extends Command
                 $citatiAuthors = ZicCitatiAuthors::query()->where(["GT_ID" => $zicId, "C_ID" => $cId])->get()->toArray();
                 $citati[$cIdx]["citatiAuthors"] = $citatiAuthors;
             }
+
+            $zicMin = array_merge([], $zic);
+
+
             $zic["citati"] = $citati;
 
 
@@ -83,8 +87,15 @@ class ReindexZic extends Command
 
 
             //print_r($zic);
-            $indexBody = $zic;
-            ElasticHelpers::indexZic($zicId, $indexBody);
+            ElasticHelpers::indexZic($zicId, $zic);
+
+            foreach ($citati as $cIdx => $citat) {
+                $cId = $citat["cid"];
+                $citat["zic"] = $zicMin;
+                ElasticHelpers::indexCitat($zicId, $cId, $citat);
+            }
+
+
         } else {
             ElasticHelpers::deleteZic($zicId);
         }

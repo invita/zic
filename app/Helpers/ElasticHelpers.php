@@ -12,7 +12,7 @@ class ElasticHelpers
     /**
      * Delete and create index
      */
-    public static function recreateIndex()
+    public static function recreateIndexZic()
     {
 
         $indexExists = \Elasticsearch::connection()->indices()->exists([
@@ -160,29 +160,97 @@ class ElasticHelpers
 HERE;
 
         return \Elasticsearch::connection()->indices()->create($createIndexArgs);
+    }
 
-        /*
-        $deleteIndexArgs = [
-            "index" => env("SI4_ELASTIC_ZIC_INDEX"),
-            "type" => "",
-            "id" => "",
-        ];
-        \Elasticsearch::connection()->delete($deleteIndexArgs);
+
+    /**
+     * Delete and create citat index
+     */
+    public static function recreateIndexCitat()
+    {
+
+        $indexExists = \Elasticsearch::connection()->indices()->exists([
+            "index" => env("SI4_ELASTIC_CITAT_INDEX", "citat")
+        ]);
+        if ($indexExists) {
+            $deleteIndexArgs = [
+                "index" => env("SI4_ELASTIC_CITAT_INDEX", "citat"),
+            ];
+            \Elasticsearch::connection()->indices()->delete($deleteIndexArgs);
+        }
 
         $createIndexArgs = [
-            "index" => env("SI4_ELASTIC_ZIC_INDEX"),
-            "type" => env("SI4_ELASTIC_ZIC_DOCTYPE", "zrtev"),
-            "id" => "",
-            "body" => []
+            "index" => env("SI4_ELASTIC_CITAT_INDEX", "citat"),
         ];
-        return @\Elasticsearch::connection()->create($createIndexArgs);
-        */
+        $createIndexArgs["body"] = <<<HERE
+{
+    "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0,
+        "analysis": {
+            "analyzer": {
+                "lowercase_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "standard",
+                    "filter": [ "lowercase" ]
+                }
+            }
+        }
+    },
+    "mappings": {
+        "citat": {
+            "date_detection": false,
+            "properties": {
+                "citatiAuthors.IME": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "citatiAuthors.PRIIMEK": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "naslov0": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "naslov1": {
+                    "type": "text",
+                    "analyzer": "lowercase_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+HERE;
+
+        return \Elasticsearch::connection()->indices()->create($createIndexArgs);
+
     }
 
 
     /**
      * Sends a document to elastic search to be indexed
-     * @param $zrtevId Integer entity id to index
+     * @param $zicId Integer entity id to index
      * @param $body Array body to index
      * @return array
      */
@@ -192,6 +260,23 @@ HERE;
             "index" => env("SI4_ELASTIC_ZIC_INDEX"),
             "type" => env("SI4_ELASTIC_ZIC_DOCTYPE"),
             "id" => $zicId,
+            "body" => $body
+        ];
+        return \Elasticsearch::connection()->index($requestArgs);
+    }
+
+    /**
+     * Sends a document to elastic search to be indexed
+     * @param $zicId Integer entity id to index
+     * @param $body Array body to index
+     * @return array
+     */
+    public static function indexCitat($zicId, $cid, $body)
+    {
+        $requestArgs = [
+            "index" => env("SI4_ELASTIC_CITAT_INDEX"),
+            "type" => env("SI4_ELASTIC_CITAT_DOCTYPE"),
+            "id" => ZicUtil::citElasticId($zicId, $cid),
             "body" => $body
         ];
         return \Elasticsearch::connection()->index($requestArgs);
@@ -228,6 +313,31 @@ HERE;
         $requestArgs = [
             "index" => env("SI4_ELASTIC_ZIC_INDEX"),
             "type" => env("SI4_ELASTIC_ZIC_DOCTYPE"),
+            "body" => [
+                "query" => $query,
+                "from" => $offset,
+                "size" => $limit,
+            ]
+        ];
+
+        if ($sortField) {
+            $requestArgs["body"]["sort"] = [$sortField => [ "order" => $sortOrder ]];
+        }
+
+        if ($highlight) {
+            $requestArgs["body"]["highlight"] = $highlight;
+        }
+
+        //print_r($requestArgs);
+
+        return \Elasticsearch::connection()->search($requestArgs);
+    }
+
+    public static function searchCit($query, $offset = 0, $limit = 10, $sortField = null, $sortOrder = "asc", $highlight = null)
+    {
+        $requestArgs = [
+            "index" => env("SI4_ELASTIC_CITAT_INDEX"),
+            "type" => env("SI4_ELASTIC_CITAT_DOCTYPE"),
             "body" => [
                 "query" => $query,
                 "from" => $offset,
@@ -382,6 +492,97 @@ HERE;
     }
 
 
+    public static function searchCitsString($queryString, $filters, $offset = 0, $limit = 10, $sortField = null, $sortOrder = "asc")
+    {
+
+        $searchFields = [
+            "citatiAuthors.IME",
+            "citatiAuthors.PRIIMEK",
+            "naslov0",
+            "naslov1",
+            "COBISSid",
+            "sistoryId",
+        ];
+
+        $must = [];
+        $should = [];
+
+        $must[] = [
+            "simple_query_string" => [
+                "fields" => $searchFields,
+                "query" => $queryString,
+                "default_operator" => "and",
+            ],
+        ];
+
+        if ($filters) {
+            foreach ($filters as $fKey => $fVal) {
+
+                switch ($fKey) {
+                    case "citatiAuthorsShort":
+                    case "citatiAuthorsLong":
+                        $must[] = [
+                            "query_string" => [
+                                "fields" => ["citatiAuthors.IME", "citatiAuthors.PRIIMEK"],
+                                "query" => join(" OR ", explode(" ", $fVal)),
+                            ],
+                        ];
+                        break;
+                    case "zicCompressed":
+                        $must[] = [
+                            "query_string" => [
+                                "fields" => ["zic.OpNaslov", "zic.authors.IME", "zic.authors.PRIIMEK"],
+                                "query" => join(" OR ", explode(" ", $fVal)),
+                            ],
+                        ];
+                        break;
+                    default:
+
+                        // Is Range query?
+                        if (strpos($fVal, "..") !== false) {
+                            $ltgt = explode("..", $fVal);
+                            $gt = isset($ltgt[0]) && $ltgt[0] ? trim($ltgt[0]) : null;
+                            $lt = isset($ltgt[1]) && $ltgt[1] ? trim($ltgt[1]) : null;
+
+                            $range = [];
+                            if ($gt) $range["gte"] = $gt;
+                            if ($lt) $range["lte"] = $lt;
+
+                            $must[] = [
+                                "range" => [
+                                    $fKey => $range
+                                ],
+                            ];
+                        } else {
+                            // Default
+
+                            // Replace whitespace with AND
+                            $fVal = join(" AND ", explode(" ", $fVal));
+                            // Replace , with OR
+                            $fVal = str_replace(",", " OR ", $fVal);
+
+                            $must[] = [
+                                "query_string" => [
+                                    "fields" => [$fKey],
+                                    "query" => $fVal,
+                                ],
+                            ];
+                        }
+                        break;
+                }
+            }
+        }
+
+        $query = [ "bool" => [] ];
+        if (count($should)) $query["bool"]["should"] = $should;
+        if (count($must)) $query["bool"]["must"] = $must;
+
+        //print_r($query);
+
+        return self::searchCit($query, $offset, $limit, $sortField, $sortOrder, null);
+    }
+
+
     /**
      * Retrieves all matching documents from elastic search
      * @param $query String to match
@@ -437,6 +638,23 @@ HERE;
         $requestArgs = [
             "index" => env("SI4_ELASTIC_ZIC_INDEX"),
             "type" => env("SI4_ELASTIC_ZIC_DOCTYPE"),
+            "body" => [
+                "query" => [
+                    "ids" => [
+                        "values" => [ $idArray ]
+                    ]
+                ]
+            ]
+        ];
+        $dataElastic = \Elasticsearch::connection()->search($requestArgs);
+        return $dataElastic;
+    }
+
+    public static function searchCitById($idArray)
+    {
+        $requestArgs = [
+            "index" => env("SI4_ELASTIC_CITAT_INDEX"),
+            "type" => env("SI4_ELASTIC_CITAT_DOCTYPE"),
             "body" => [
                 "query" => [
                     "ids" => [

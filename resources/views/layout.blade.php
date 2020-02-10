@@ -35,6 +35,7 @@
     <script src="/js/si4/widget/si4AutoComplete.js"></script>
     <script src="/js/si4/modules/index.js"></script>
     <script src="/js/si4/modules/search.js"></script>
+    <script src="/js/si4/modules/searchc.js"></script>
     <script src="/js/si4/modules/zic.js"></script>
     <script src="/js/si4/search/autocomplete.js"></script>
     <script src="/js/si4/init.js"></script>
@@ -123,6 +124,7 @@
                     </div>
                     <div class="content katSearch active" id="pnlZics">
                         <form id="searchFormZic">
+                            <input id="searchType" name="t" value="{{$t}}" type="hidden" />
                             <div class="row collapse searchInputRow">
                                 <div class="large-11 medium-11 small-10 columns">
                                     <input id="searchInput" name="search" value="{{$q}}" type="text"
@@ -139,7 +141,11 @@
                             <div class="large-11 medium-11 small-10 columns">&nbsp;</div>
                             <div class="large-1 medium-1 small-2 columns" style="z-index:10;">
                                 <a class="nowrap translateHtml" data-translateHtml="text_vsiZic"
-                                    onclick="$('#searchInput').val('*'); $('#searchFormZic').submit();"></a>
+                                    onclick="$('#searchInput').val('*'); $('#searchType').val('zic'); $('#searchFormZic').submit();"></a>
+                            </div>
+                            <div class="large-1 medium-1 small-2 columns" style="z-index:10;">
+                                <a class="nowrap translateHtml" data-translateHtml="text_vsiCitati"
+                                    onclick="$('#searchInput').val('*'); $('#searchType').val('cit'); $('#searchFormZic').submit();"></a>
                             </div>
                         </div>
                     </div>

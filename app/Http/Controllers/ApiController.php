@@ -100,6 +100,102 @@ class ApiController extends Controller
         return response(json_encode($result))->header('Content-Type', 'application/json');
     }
 
+    public function searchc(Request $request)
+    {
+        $input =  file_get_contents("php://input");
+        $inputJson = json_decode($input, true);
+
+        $q = "*";
+        if (isset($inputJson["q"])) $q = $inputJson["q"];
+        if (isset($inputJson["staticData"]) && isset($inputJson["staticData"]["q"])) $q = $inputJson["staticData"]["q"];
+
+        $pageStart = isset($inputJson["pageStart"]) ? $inputJson["pageStart"] : 0;
+        $pageCount = isset($inputJson["pageCount"]) ? $inputJson["pageCount"] : 20;
+        $sortField = isset($inputJson["sortField"]) ? $inputJson["sortField"] : null;
+        $sortOrder = isset($inputJson["sortOrder"]) ? $inputJson["sortOrder"] : "asc";
+
+        if ($sortField) {
+            if (isset(ZicUtil::$citFieldsSortMap[$sortField]))
+                $sortField = ZicUtil::$citFieldsSortMap[$sortField];
+        }
+
+        $filter = $inputJson["filter"];
+        if ($filter) {
+            $filterMapped = [];
+            foreach ($filter as $fKey => $fVal) {
+                if ($fKey == "zapSt") {
+                    $e = explode("/", $fVal);
+                    if (count($e) === 1) {
+                        $filterMapped["gtid"] = $fVal;
+                    } else if (count($e) === 2) {
+                        $filterMapped["gtid"] = $e[0];
+                        $filterMapped["cid"] = $e[1];
+                    }
+
+                } else {
+                    //if (isset(ZicUtil::$citFieldsSortMap[$fKey])) $fKey = ZicUtil::$citFieldsSortMap[$fKey];
+                    $filterMapped[$fKey] = $fVal;
+                }
+            }
+            $filter = $filterMapped;
+        }
+
+
+
+        $cits = [];
+        $rowCount = 0;
+        $error = "";
+        $status = true;
+
+        try {
+            if ($q) {
+                $citsElastic = ElasticHelpers::searchCitsString($q, $filter, $pageStart, $pageCount, $sortField, $sortOrder);
+
+                $rowCount = $citsElastic["hits"]["total"];
+                $cits = ZicUtil::citsDisplay(ElasticHelpers::elasticResultToSimpleArray($citsElastic));
+            }
+        } catch (\Exception $e) {
+            if ($e instanceof ElasticsearchException) {
+                $elasticE = json_decode($e->getMessage(), true);
+                $status = false;
+                if (isset($elasticE["error"]) && isset($elasticE["error"]["root_cause"])) {
+                    $eRoots = $elasticE["error"]["root_cause"];
+                    foreach ($eRoots as $eRoot) {
+                        if (isset($eRoot["reason"])) {
+                            if ($error) $error .= "; ";
+                            $error .= $eRoot["reason"];
+                        }
+                    }
+                }
+                if (!$error) {
+                    $error = get_class($e) .": ". $e->getMessage();
+                }
+            } else {
+                $status = false;
+                $error = get_class($e) .": ". $e->getMessage();
+            }
+        }
+
+        //print_r($zicsElastic);
+
+        $result = array(
+            "request" => [
+                "q" => $q,
+                "filter" => $filter,
+                "pageStart" => $pageStart,
+                "pageCount" => $pageCount,
+                "sortField" => $sortField,
+                "sortOrder" => $sortOrder,
+            ],
+            "status" => $status,
+            "error" => $error,
+            "rowCount" => $rowCount,
+            "data" => $cits,
+        );
+
+        return response(json_encode($result))->header('Content-Type', 'application/json');
+    }
+
     private static function countMatchingChars($str1, $str2) {
         $len1 = mb_strlen($str1);
         $len2 = mb_strlen($str2);
