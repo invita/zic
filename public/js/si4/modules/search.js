@@ -73,7 +73,7 @@ si4.modules.search = function(args) {
             OpNaslov: { caption: si4.translate("field_OpNaslov"), canSort: true, canFilter: true },
             PvLeto: { caption: si4.translate("field_PvLeto"), canSort: true, canFilter: true, width: 100, },
             PvKraj: { caption: si4.translate("field_PvKraj"), canSort: true, canFilter: true },
-            citatiCount: { caption: si4.translate("field_citatiCount"), canSort: true, canFilter: true },
+            //citatiCount: { caption: si4.translate("field_citatiCount"), canSort: true, canFilter: true },
             citiranoCount: { caption: si4.translate("field_citiranoCount"), canSort: true, canFilter: true },
 
             //PvZalozba: { caption: si4.translate("field_PvZalozba"), canSort: true, canFilter: true },

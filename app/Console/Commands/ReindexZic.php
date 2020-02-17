@@ -80,10 +80,20 @@ class ReindexZic extends Command
 
 
             // Citirano count
+            $OpCobId = isset($zic["OpCobId"]) ? $zic["OpCobId"] : null;
+            if ($OpCobId) {
+                $query = DB::raw("SELECT COUNT(DISTINCT gtid, cid) AS CNT FROM ZIC_CITATI_V2 WHERE COBISSid = :cobId");
+                $citiranoCountDB = DB::selectOne($query, [ "cobId" => $OpCobId ]);
+                $zic["citiranoCount"] = $citiranoCountDB->CNT;
+            } else {
+                $zic["citiranoCount"] = 0;
+            }
+            /*
             $OpNaslov = isset($zic["OpNaslov"]) ? $zic["OpNaslov"] : "";
             $query = DB::raw("SELECT COUNT(DISTINCT GT_ID, C_ID) AS CNT FROM ZIC_CITATI_TITLES_V2 WHERE TRIM(NAZIV) = :val");
             $citiranoCountDB = DB::selectOne($query, [ "val" => $OpNaslov ]);
             $zic["citiranoCount"] = $citiranoCountDB->CNT;
+            */
 
 
             //print_r($zic);

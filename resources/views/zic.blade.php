@@ -34,50 +34,6 @@
     </div>
 
 
-    @if (isset($zic["citati"]) && $zic["citati"])
-        <h5 id="citatiToggleHandle" class="">{{ __("zic.field_citati") }}{{ isset($zic["citatiCount"]) ? " (".$zic["citatiCount"].")" : "" }}</h5>
-        <div id="citatiToggleDiv"style="display:none;">
-
-            <table class="citati">
-                <thead>
-                    <tr>
-                        @foreach ($citatiFields as $cFieldName)
-                            <th>{{ __("zic.field_".$cFieldName) }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach ($zic["citati"] as $citat)
-                        <?php
-                        //<tr onclick="location.href='/redirectCited?gtid={{ $citat["gtid"] }}&cid={{ $citat["cid"] }}'">
-                        ?>
-
-                        <tr onclick="location.href='/cit?zid={{ $citat["gtid"] }}&cid={{ $citat["cid"] }}'">
-                        @foreach($citatiFields as $cFieldName)
-                            <td>
-                                {{ isset($citat[$cFieldName]) && $citat[$cFieldName] ? $citat[$cFieldName] : "" }}
-                            </td>
-                        @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-
-        <script>
-            $(document).ready(function() {
-                $("#citatiToggleHandle").click(function() {
-                    $("#citatiToggleHandle").toggleClass("active");
-                    $("#citatiToggleDiv").slideToggle();
-                });
-            });
-        </script>
-
-    @endif
-
-
     @if (isset($zic["citing"]) && $zic["citing"])
         <h5 id="citingToggleHandle" class="">{{ __("zic.field_citirano") }}{{ isset($zic["citiranoCount"]) ? " (".$zic["citiranoCount"].")" : "" }}</h5>
         <div id="citingToggleDiv" style="display:none;">
@@ -122,6 +78,50 @@
                     var div = $(this);
                     div.addClass("copied");
                     setTimeout(function() { div.removeClass("copied") }, 3000);
+                });
+            });
+        </script>
+
+    @endif
+
+
+    @if (isset($zic["citati"]) && $zic["citati"])
+        <h5 id="citatiToggleHandle" class="">{{ __("zic.field_citati") }}{{ isset($zic["citatiCount"]) ? " (".$zic["citatiCount"].")" : "" }}</h5>
+        <div id="citatiToggleDiv"style="display:none;">
+
+            <table class="citati">
+                <thead>
+                    <tr>
+                        @foreach ($citatiFields as $cFieldName)
+                            <th>{{ __("zic.field_".$cFieldName) }}</th>
+                        @endforeach
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach ($zic["citati"] as $citat)
+                        <?php
+                        //<tr onclick="location.href='/redirectCited?gtid={{ $citat["gtid"] }}&cid={{ $citat["cid"] }}'">
+                        ?>
+
+                        <tr onclick="location.href='/cit?zid={{ $citat["gtid"] }}&cid={{ $citat["cid"] }}'">
+                        @foreach($citatiFields as $cFieldName)
+                            <td>
+                                {{ isset($citat[$cFieldName]) && $citat[$cFieldName] ? $citat[$cFieldName] : "" }}
+                            </td>
+                        @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+
+        <script>
+            $(document).ready(function() {
+                $("#citatiToggleHandle").click(function() {
+                    $("#citatiToggleHandle").toggleClass("active");
+                    $("#citatiToggleDiv").slideToggle();
                 });
             });
         </script>

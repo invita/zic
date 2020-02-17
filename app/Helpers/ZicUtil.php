@@ -23,7 +23,7 @@ class ZicUtil
         "OpSistoryUrnId",
         "PvCobId",
         "oneline",
-        "citatiCount",
+        //"citatiCount",
         "citiranoCount",
     ];
     public static $detailsViewCitatiFields = [
@@ -247,6 +247,67 @@ class ZicUtil
         }
     }
 
+    public static function zicDisplay_compressed($zicRecord) {
+
+        $typeV2 = Si4Util::getArg($zicRecord, "TypeV2", null);
+
+        $firstAuthor = Si4Util::pathArg($zicRecord, "authors/0", null);
+        $author = self::getAuthorName($firstAuthor);
+
+        if (isset($zicRecord["OpTipologija"])) {
+            $tipologies = SifHelpers::getTipologies();
+            if (isset($tipologies[$zicRecord["OpTipologija"]])) {
+                $sifStr = strval($zicRecord["OpTipologija"]); // "101"
+                $sifDot = $sifStr[0].".".substr($sifStr, 1); // "1.01"
+                $tipoDescription = $tipologies[$zicRecord["OpTipologija"]];
+                $tipoShort = $sifDot;
+                $tipoLong = $tipoDescription;
+            }
+        }
+
+        $naslov = Si4Util::pathArg($zicRecord, "OpNaslov", null);
+        $naslovVira = Si4Util::pathArg($zicRecord, "PvNaslov", null);
+
+        $kraj = Si4Util::pathArg($zicRecord, "PvKraj", null);
+        $zalozba = Si4Util::pathArg($zicRecord, "PvZalozba", null);
+
+        $leto = Si4Util::pathArg($zicRecord, "PvLeto", null);
+        $letnik = Si4Util::pathArg($zicRecord, "PvLetnik", null);
+        $st = Si4Util::pathArg($zicRecord, "PvSt", null);
+        $stran = Si4Util::pathArg($zicRecord, "PvStran", null);
+        $issn = Si4Util::pathArg($zicRecord, "PvISSN", null);
+        $cobissId = Si4Util::pathArg($zicRecord, "PvCobId", null);
+        $sistoryId = Si4Util::pathArg($zicRecord, "OpSistoryUrnId", null);
+
+        $arr = [];
+
+        switch ($typeV2) {
+            case "serial":
+                // Priimek, Ime. Naslov. Naslov vira. Leto, letn. XX., št. XX, str. XX-XX. ISSN XXXX. COBISS ID XXXXX
+                if ($author) $arr[] = $author.". ";
+                if ($naslov) $arr[] = $naslov.". ";
+                if ($naslovVira) $arr[] = $naslovVira.". ";
+                if ($leto) $arr[] = $leto;
+                if ($letnik) $arr[] = ", letn. ".$letnik.".";
+                if ($st) $arr[] = ", št. ".$st;
+                if ($stran) $arr[] = ", str. ".$stran;
+                if ($tipoLong) $arr[] = ", ".$tipoLong;
+                if ($cobissId) $arr[] = ", COBISS ID: ".$cobissId;
+                return trim(join("", $arr));
+            case "mono":
+                // Priimek, Ime. Naslov. Naslov vira (če je zbornik). Kraj: Založba, Leto. ISBN XXXX. COBISS ID: XXXXXX
+                if ($author) $arr[] = $author.". ";
+                if ($naslov) $arr[] = $naslov.". ";
+                if ($naslovVira) $arr[] = $naslovVira.". ";
+                if ($leto) $arr[] = ", ".$leto.".";
+                if ($tipoLong) $arr[] = ", ".$tipoLong;
+                if ($cobissId) $arr[] = ", COBISS ID: ".$cobissId;
+                return trim(join("", $arr));
+            default:
+                return "";
+        }
+    }
+
     public static function zicsDisplay($zicRecords) {
         foreach ($zicRecords as $idx => $zicRecord) {
             $zicRecords[$idx] = self::zicDisplay($zicRecord);
@@ -289,7 +350,7 @@ class ZicUtil
         $citRecord["citElasticId"] = self::citElasticId($citRecord["gtid"], $citRecord["cid"]);
         $citRecord["zapSt"] = $citRecord["gtid"]."/".$citRecord["cid"];
 
-        $citRecord["zicCompressed"] = self::zicDisplay_oneline($citRecord["zic"]);
+        $citRecord["zicCompressed"] = self::zicDisplay_compressed($citRecord["zic"]);
         $citRecord["zicTitle"] = Si4Util::pathArg($citRecord, "zic/OpNaslov", "");
         $citRecord["zicLink"] = "/zic?id=".$citRecord["gtid"];
 

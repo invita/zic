@@ -711,10 +711,20 @@ HERE;
             ]
         ];
 
+        if (!$originalZic["OpCobId"]) return [];
+
+
+        // Must match cobissId
+        $query["bool"]["must"][] = [
+            "term" => [ "citati.COBISSid" => $originalZic["OpCobId"] ]
+        ];
+
         // Must match title
+        /*
         $query["bool"]["must"][] = [
             "term" => [ "citati.naslov0.keyword" => $originalZic["OpNaslov"] ]
         ];
+        */
 
         // Must match at least one author
         /*
@@ -731,7 +741,7 @@ HERE;
         ];
         */
 
-        //print_r($query);
+        print_r($query);
 
         return self::search($query, 0, 9999, null, "asc", null);
 

@@ -1130,3 +1130,20 @@ img.imgPdf {
     border-radius: 5px 0 0 5px;
     border: rgba(24,186,16, 1) solid 2px;
 }
+
+.katSearch {
+
+}
+.si4DataTable .filterButton span.qm:hover {
+    color: #BA1810;
+}
+
+.searchInputRow .button.buttonC {
+    line-height: 6px;
+    width: 49%;
+    font-size: 0.95rem;
+}
+
+tbody .zicCompressed {
+    border-left: silver solid 1px;
+}

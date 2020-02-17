@@ -46,7 +46,7 @@ return [
     'field_oneline' => 'Kopiranju prijazno',
     'field_citatiCount' => 'Št. referenc',
     'field_citiranoCount' => 'Št. citatov',
-    'field_citati' => 'Reference navedene v delu',
+    'field_citati' => 'Seznam literature v delu',
     'field_citirano' => 'Citirano v',
 
     // Citati Fields
@@ -62,14 +62,14 @@ return [
     'field_zapSt' => 'Zap. št.',
     'field_citatiAuthorsShort' => 'Avtor(ji)',
     'field_citatiAuthorsLong' => 'Avtor(ji)',
-    'field_zicCompressed' => 'Referenca navedena v delu',
+    'field_zicCompressed' => 'Citirano v',
 
     // Text
     'text_searchString' => 'Vpišite iskalni niz. Uporabljate lahko *, npr. Jane*',
     'text_sistory' => 'Zgodovina Slovenije - SIstory',
     'text_newsletterSignup' => 'Prijava na novice',
     'text_vsiZic' => 'Vsa dela',
-    'text_vsiCitati' => 'Vse reference',
+    'text_vsiCitati' => 'Vsi bibliografski navedki',
     'text_back' => 'Nazaj',
     'text_downloadPdf' => 'Prenesi PDF',
 

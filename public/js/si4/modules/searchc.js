@@ -67,7 +67,8 @@ si4.modules.searchc = function(args) {
             naslov0: { caption: si4.translate("field_naslov0"), canSort: true, canFilter: true, format: naslov0Format },
             vir: { caption: si4.translate("field_vir"), canSort: true, canFilter: true },
             leto: { caption: si4.translate("field_leto"), canSort: true, canFilter: true },
-            zicCompressed: { caption: si4.translate("field_zicCompressed"), canSort: true, canFilter: true, format: zicCompressedFormat },
+            zicCompressed: { caption: si4.translate("field_zicCompressed"), canSort: true, canFilter: true,
+                tagClass: "zicCompressed", format: zicCompressedFormat },
 
             /*
             // Sample:

@@ -94,7 +94,7 @@
                     </a>
                 </div>
 
-                <div class="search large-10 medium-10 small-12 columns" style="height: 7em;">
+                <div class="search large-10 medium-10 small-12 columns" style="height: 10em;">
                     <div class="searchTitle">
                         <!-- Desktop tabs -->
                         <div class="show-for-large-up">
@@ -138,13 +138,10 @@
                             </div>
                         </form>
                         <div class="row collapse searchInputRow" style="margin-top: 5px;">
-                            <div class="large-11 medium-11 small-10 columns">&nbsp;</div>
-                            <div class="large-1 medium-1 small-2 columns" style="z-index:10;">
-                                <a class="nowrap translateHtml" data-translateHtml="text_vsiZic"
+                            <div class="large-12 medium-12 small-12 columns" style="z-index:10;">
+                                <a class="button buttonC nowrap translateHtml" data-translateHtml="text_vsiZic"
                                     onclick="$('#searchInput').val('*'); $('#searchType').val('zic'); $('#searchFormZic').submit();"></a>
-                            </div>
-                            <div class="large-1 medium-1 small-2 columns" style="z-index:10;">
-                                <a class="nowrap translateHtml" data-translateHtml="text_vsiCitati"
+                                <a class="button buttonC nowrap translateHtml" data-translateHtml="text_vsiCitati"
                                     onclick="$('#searchInput').val('*'); $('#searchType').val('cit'); $('#searchFormZic').submit();"></a>
                             </div>
                         </div>

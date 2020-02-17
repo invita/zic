@@ -344,7 +344,7 @@ si4.widget.si4DataTable = function(args)
             _p[cpName].filterImg = new si4.widget.si4Element({parent:_p[cpName].filterDiv.selector, tagName:"img", tagClass:"icon16 vmid"});
             _p[cpName].filterImg.selector.attr("src", "/img/icon/dataTable_filter.png");
             _p[cpName].filterSpan = new si4.widget.si4Element({parent:_p[cpName].filterDiv.selector, tagName:"span", tagClass:"vmid"});
-            _p[cpName].filterSpan.selector.html("Filter");
+            _p[cpName].filterSpan.selector.html("Filter" + (this.filterHint ? ' <span class="qm">(?)<span/>': ''));
             _p[cpName].filterDiv.selector.click(function(){ _p.toggleFilter(); });
             if (this.filterHint) _p[cpName].filterDiv.setHint(this.filterHint);
         }
