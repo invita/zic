@@ -1140,8 +1140,9 @@ img.imgPdf {
 
 .searchInputRow .button.buttonC {
     line-height: 6px;
-    width: 49%;
     font-size: 0.95rem;
+    margin: 0;
+    flex: 1;
 }
 
 tbody .zicCompressed {

@@ -741,7 +741,7 @@ HERE;
         ];
         */
 
-        print_r($query);
+        //print_r($query);
 
         return self::search($query, 0, 9999, null, "asc", null);
 

@@ -138,12 +138,13 @@
                             </div>
                         </form>
                         <div class="row collapse searchInputRow" style="margin-top: 5px;">
-                            <div class="large-12 medium-12 small-12 columns" style="z-index:10;">
-                                <a class="button buttonC nowrap translateHtml" data-translateHtml="text_vsiZic"
+                            <div class="large-11 medium-11 small-10 columns" style="display: flex; flex-direction: row;">
+                                <a class="button buttonC nowrap translateHtml" style="margin-right:2px;" data-translateHtml="text_vsiZic"
                                     onclick="$('#searchInput').val('*'); $('#searchType').val('zic'); $('#searchFormZic').submit();"></a>
-                                <a class="button buttonC nowrap translateHtml" data-translateHtml="text_vsiCitati"
+                                <a class="button buttonC nowrap translateHtml" style="margin-left:2px;" data-translateHtml="text_vsiCitati"
                                     onclick="$('#searchInput').val('*'); $('#searchType').val('cit'); $('#searchFormZic').submit();"></a>
                             </div>
+                            <div class="large-1 medium-1 small-2 columns">&nbsp;</div>
                         </div>
                     </div>
                 </div>
