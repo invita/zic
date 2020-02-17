@@ -399,6 +399,11 @@ si4.widget.si4Input = function(args)
     if (this.caption && !this.withCode)
         this.captionDiv.selector.html(this.caption);
 
+    if (this.type === "checkbox") {
+        this.captionDiv.selector.css("cursor", "pointer");
+        this.captionDiv.selector.click(function() { _p.setValue(!_p.getValue()); });
+    }
+
     if (this.withCode) {
         this.codeSelect = new si4.widget.si4Element({parent:this.captionDiv.selector, tagName:"select", tagClass:"codeSelect"});
         for (var idx in this.withCode) {

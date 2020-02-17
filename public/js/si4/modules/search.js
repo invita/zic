@@ -88,5 +88,27 @@ si4.modules.search = function(args) {
         canExportPdf: true,
         filterHint: si4.translate("filter_hint"),
         //cssClass_table: "si4DataTable_table width100percent"
+
+        customControlls: function(dt, cpName) {
+            if (cpName !== "dsControl") return;
+            dt.samocitatiDiv = new si4.widget.si4Element({parent:dt.dsControl.selector, tagClass:"inline samocitatiDiv vmid"});
+            dt.samocitatiDiv.selector.css("margin-left", "5px");
+            dt.samocitatiCheckbox = new si4.widget.si4Input({ parent:dt.samocitatiDiv.selector, type: "checkbox", caption: "Vključi tudi samocitate" });
+            dt.samocitatiCheckbox.input.selector.css("margin-top", "7px");
+
+        }
     });
+
+    //this.dataTable.samocitatiDiv = new si4.widget.si4Element({parent:this.dataTable.dsControl.selector, tagClass:"inline samocitatiDiv vmid"});
+
+    //this.dataTable.dsControl
+    /*
+    _p[cpName].filterDiv = new si4.widget.si4Element({parent:_p[cpName].selector, tagClass:"inline filterButton vmid"});
+    _p[cpName].filterImg = new si4.widget.si4Element({parent:_p[cpName].filterDiv.selector, tagName:"img", tagClass:"icon16 vmid"});
+    _p[cpName].filterImg.selector.attr("src", "/img/icon/dataTable_filter.png");
+    _p[cpName].filterSpan = new si4.widget.si4Element({parent:_p[cpName].filterDiv.selector, tagName:"span", tagClass:"vmid"});
+    _p[cpName].filterSpan.selector.html("Filter" + (this.filterHint ? ' <span class="qm">(?)<span/>': ''));
+    _p[cpName].filterDiv.selector.click(function(){ _p.toggleFilter(); });
+    */
+
 };
