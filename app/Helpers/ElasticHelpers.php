@@ -521,7 +521,7 @@ HERE;
             $filter[] = [
                 "script" => [
                     "script" => [
-                        "source" => "return (doc['citatiAuthors.IME.keyword'] != doc['zic.authors.IME.keyword'] && doc['citatiAuthors.PRIIMEK.keyword'] != doc['zic.authors.PRIIMEK.keyword']);",
+                        "inline" => "return (doc['citatiAuthors.IME.keyword'] != doc['zic.authors.IME.keyword'] && doc['citatiAuthors.PRIIMEK.keyword'] != doc['zic.authors.PRIIMEK.keyword']);",
                         //"source" => "if (doc['citatiAuthors.IME.keyword'] != doc['zic.authors.IME.keyword'] && doc['citatiAuthors.PRIIMEK.keyword'] != doc['zic.authors.PRIIMEK.keyword']) { return true; } else { return false; }",
                         "lang" => "painless"
                     ]
