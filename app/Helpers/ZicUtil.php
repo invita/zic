@@ -21,12 +21,14 @@ class ZicUtil
         "PvLetnik",
         "PvSt",
         "OpSistoryUrnId",
-        "PvCobId",
+        "OpCobId",
+        //"PvCobId",
         "oneline",
         //"citatiCount",
         "citiranoCount",
     ];
     public static $detailsViewCitatiFields = [
+        //"COBISSid",
         "str",
         "avtor0",
         "naslov0",
@@ -36,6 +38,9 @@ class ZicUtil
         "leto",
     ];
     public static $detailsViewCitingFields = [
+        //"ID",
+        //"OpCobId",
+        //"PvCobId",
         "tipologyLong",
         "authorsLong",
         "OpNaslov",
@@ -181,6 +186,9 @@ class ZicUtil
         }
 
         // Cobiss Link
+        if (isset($zicRecord["OpCobId"])) {
+            $zicRecord["OpCobId_link"] = "http://www.cobiss.si/scripts/cobiss?command=DISPLAY&base=cobib&rid=".$zicRecord["OpCobId"];
+        }
         if (isset($zicRecord["PvCobId"])) {
             $zicRecord["PvCobId_link"] = "http://www.cobiss.si/scripts/cobiss?command=DISPLAY&base=cobib&rid=".$zicRecord["PvCobId"];
         }

@@ -430,6 +430,7 @@ HERE;
             ],
         ];
 
+
         if ($filters) {
             //$filters = self::mapFilterFilterFields($filters);
             //print_r($filtersParsed);
@@ -683,8 +684,78 @@ HERE;
 
     }
 
-    public static function searchCitingZics($originalZic)
+    public static function searchCitingZics($originalZic, $excludeSelfCitations = false)
     {
+
+        if (!$originalZic["OpCobId"] && !$originalZic["OpNaslov"] && !$originalZic["PvLeto"]) return [];
+
+        // Either match by cobissId or by title + year
+        $query = [
+            "bool" => [
+                "should" => [],
+                "minimum_should_match" => 1
+            ]
+        ];
+
+        // Cobiss
+        if ($originalZic["OpCobId"]) {
+            $query["bool"]["should"][] = [
+                "bool" => [
+                    "must" => [
+                        ["term" => [ "citati.COBISSid" => $originalZic["OpCobId"] ]]
+                    ]
+                ]
+            ];
+        }
+
+        // Title and year
+        if ($originalZic["OpNaslov"] && $originalZic["PvLeto"]) {
+            $query["bool"]["should"][] = [
+                "bool" => [
+                    "must" => [
+                        ["term" => ["citati.naslov0.keyword" => $originalZic["OpNaslov"]]],
+                        //["term" => ["citati.leto.keyword" => $originalZic["PvLeto"]]],
+                    ]
+                ]
+            ];
+        }
+
+        if ($excludeSelfCitations) {
+            $query["bool"]["must_not"] = [];
+            foreach ($originalZic["authors"] as $oAuthor) {
+                $query["bool"]["must_not"][] = [
+                    /*
+                    "term" => [
+                        //"leto" => 1964
+                        "citati.citatiAuthors.IME.keyword" => $oAuthor["IME"],
+                        //"citati.citatiAuthors.PRIIMEK.keyword" => $oAuthor["PRIIMEK"]
+                    ]
+                    */
+
+                    "bool" => [
+                        "filter" => [
+                            ["term" => ["authors.IME.keyword" => $oAuthor["IME"]]],
+                            ["term" => ["authors.PRIIMEK.keyword" => $oAuthor["PRIIMEK"]]],
+                        ],
+                    ]
+                    /*
+                    */
+
+                    /*
+                    "term" => [
+                        //"leto" => 1964
+                        "citati.citatiAuthors.IME.keyword" => $oAuthor["IME"],
+                        "citati.citatiAuthors.PRIIMEK.keyword" => $oAuthor["PRIIMEK"]
+                    ]
+                    */
+                ];
+            }
+        }
+
+
+        //print_r($query);
+
+
 
         //$originalZic["authors"] == $originalZic["citati"][$i]["citatiAuthors"]
         //$originalZic["OpNaslov"] == $originalZic["citati"][$i]["naslov0"]
@@ -705,6 +776,7 @@ HERE;
         */
 
 
+        /*
         $query = [
             "bool" => [
                 "must" => []
@@ -718,6 +790,7 @@ HERE;
         $query["bool"]["must"][] = [
             "term" => [ "citati.COBISSid" => $originalZic["OpCobId"] ]
         ];
+        */
 
         // Must match title
         /*

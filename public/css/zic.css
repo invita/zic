@@ -1148,3 +1148,9 @@ img.imgPdf {
 tbody .zicCompressed {
     border-left: silver solid 1px;
 }
+
+div.samocitatiDiv { color:#222; font-weight:bold; margin-bottom: 5px; float: right; }
+div.samocitatiDiv .si4InputCaption { color:#222; font-weight:bold; }
+
+div.samocitatiDetails { display: flex; flex-direction: row; justify-content: flex-end; margin: 3px 0; }
+div.samocitatiDetails input { margin: 4px 6px; }

@@ -38,6 +38,10 @@
         <h5 id="citingToggleHandle" class="">{{ __("zic.field_citirano") }}{{ isset($zic["citiranoCount"]) ? " (".$zic["citiranoCount"].")" : "" }}</h5>
         <div id="citingToggleDiv" style="display:none;">
 
+            <div class="samocitatiDetails">
+                <label for="samocitati">Vključi tudi samocitate</label>
+                <input type="checkbox" id="samocitati">
+            </div>
             <table class="citing">
                 <thead>
                     <tr>
@@ -64,10 +68,23 @@
 
         <script>
             $(document).ready(function() {
+                var qp = si4.queryStringToJson(location.search);
+                var showCiting = qp.show == "citing";
+                var sc = !!(qp.sc === "1" || qp.sc === undefined);
                 $("#citingToggleHandle").click(function() {
                     $("#citingToggleHandle").toggleClass("active");
                     $("#citingToggleDiv").slideToggle();
                 });
+
+                if (showCiting) {
+                    $("#citingToggleHandle").addClass("active");
+                    $("#citingToggleDiv").toggle();
+                    $("#citingToggleHandle")[0].scrollIntoView();
+                }
+
+                if (sc) {
+                    $("#samocitati").prop("checked", true);
+                }
 
                 $(".copyOnClick").click(function() {
                     var input = $(this).find("input")[0];
@@ -78,6 +95,15 @@
                     var div = $(this);
                     div.addClass("copied");
                     setTimeout(function() { div.removeClass("copied") }, 3000);
+                });
+
+                $("#samocitati").click(function() {
+                    var value = $("#samocitati").prop("checked");
+                    var queryParams = si4.queryStringToJson(location.search);
+                    queryParams.show = "citing";
+                    if (value) delete queryParams.sc; else queryParams.sc = "0";
+                    //console.log(value, si4.jsonToQueryString(queryParams));
+                    location.href = "/zic" + si4.jsonToQueryString(queryParams);
                 });
             });
         </script>

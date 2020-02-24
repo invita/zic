@@ -12,6 +12,7 @@ class ZicController extends LayoutController
     public function index(Request $request)
     {
         $zicId = $request->input('id');
+        $sc = $request->input('sc') !== "0"; // self citing
 
         if (!$zicId) die("Missing Id");
         $zicRest = "";
@@ -38,7 +39,7 @@ class ZicController extends LayoutController
         $zicDocument = $zics[$zicId];
         $zic = ZicUtil::zicDisplay($zicDocument);
 
-        $citingZicsElastic = ElasticHelpers::searchCitingZics($zicDocument);
+        $citingZicsElastic = ElasticHelpers::searchCitingZics($zicDocument, !$sc);
         $citingZics = ElasticHelpers::elasticResultToSimpleAssocArray($citingZicsElastic);
 
         foreach ($citingZics as $idx => $cz) {
@@ -46,6 +47,7 @@ class ZicController extends LayoutController
         }
 
         $zic["citing"] = $citingZics;
+        $zic["citiranoCount"] = count($citingZics);
 
         //print_r($citingZics);
 

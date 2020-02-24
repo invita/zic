@@ -42,6 +42,7 @@ return [
     'field_PvLetnik' => 'Year',
     'field_PvSt' => 'Number',
     'field_OpSistoryUrnId' => 'Sistory Id',
+    'field_OpCobId' => 'Cobiss Id',
     'field_PvCobId' => 'Cobiss Id',
     'field_oneline' => 'Copy friendly',
     'field_citatiCount' => 'Reference count',

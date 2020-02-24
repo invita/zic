@@ -42,6 +42,7 @@ return [
     'field_PvLetnik' => 'Letnik',
     'field_PvSt' => 'Številka',
     'field_OpSistoryUrnId' => 'Sistory Id',
+    'field_OpCobId' => 'Cobiss Id',
     'field_PvCobId' => 'Cobiss Id',
     'field_oneline' => 'Kopiranju prijazno',
     'field_citatiCount' => 'Št. referenc',

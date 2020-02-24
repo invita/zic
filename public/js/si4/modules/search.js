@@ -42,7 +42,7 @@ si4.modules.search = function(args) {
                 window.open("/zicTablePdf"+location.search);
                 //si4.api.zicTable
             },
-            staticData : { q: args.q },
+            staticData : { q: args.q, samocitati: true },
             pageCount: 20
         }),
         editorModuleArgs: {
@@ -95,6 +95,12 @@ si4.modules.search = function(args) {
             dt.samocitatiDiv.selector.css("margin-left", "5px");
             dt.samocitatiCheckbox = new si4.widget.si4Input({ parent:dt.samocitatiDiv.selector, type: "checkbox", caption: "Vključi tudi samocitate" });
             dt.samocitatiCheckbox.input.selector.css("margin-top", "7px");
+            dt.samocitatiCheckbox.setValue(dt.dataSource.staticData["samocitati"]);
+            dt.samocitatiCheckbox.selector.click(function(args) {
+                var value = dt.samocitatiCheckbox.getValue();
+                dt.dataSource.staticData["samocitati"] = value;
+                dt.refresh();
+            });
 
         }
     });

@@ -33,6 +33,7 @@ class ApiController extends Controller
         $q = "*";
         if (isset($inputJson["q"])) $q = $inputJson["q"];
         if (isset($inputJson["staticData"]) && isset($inputJson["staticData"]["q"])) $q = $inputJson["staticData"]["q"];
+        $samocitati = Si4Util::pathArg($inputJson, "staticData/samocitati", false);
 
         $pageStart = isset($inputJson["pageStart"]) ? $inputJson["pageStart"] : 0;
         $pageCount = isset($inputJson["pageCount"]) ? $inputJson["pageCount"] : 20;
@@ -54,9 +55,71 @@ class ApiController extends Controller
         try {
             if ($q) {
                 $zicsElastic = ElasticHelpers::searchString($q, $filter, $pageStart, $pageCount, $sortField, $sortOrder);
+                $zicsElasticArr = ElasticHelpers::elasticResultToSimpleArray($zicsElastic);
+
+
+                //$oAuthors = Si4Util::pathArg($zicsElasticArr, "authors", []);
+
+                //$samocitati
+
+                if (!$samocitati) {
+
+                    // Remove samocitati count
+                    foreach ($zicsElasticArr as $zIdx => $zic) {
+
+                        //echo "ZIC ".$zic["ID"]."\n";
+
+                        //print_r($zic);
+
+                        $citing = ElasticHelpers::searchCitingZics($zic, true);
+                        //print_r($citing);
+                        //die();
+
+                        $noSelfCitingCount = Si4Util::pathArg($citing, "hits/total", 0);
+                        $zicsElasticArr[$zIdx]["citiranoCount"] = $noSelfCitingCount;
+
+                        //$zic["citiranoCount"] = $noSelfCitingCount;
+                        //$zic["citiranoCount"] = 0;
+
+
+                        /*
+                        $noSelfCitingCount = 0;
+                        $citing = ElasticHelpers::searchCitingZics($zic);
+                        print_r($citing);
+                        die();
+
+                        $hits = Si4Util::pathArg($citing, "hits/hits", []);
+                        foreach ($hits as $hit) {
+                            $countIt = true;
+                            $authors = Si4Util::pathArg($hit, "_source/authors", []);
+                            foreach ($authors as $author) {
+                                foreach ($oAuthors as $oAuthor) {
+                                    if ($oAuthor["IME"] == $author["IME"] && $oAuthor["PRIIMEK"] == $author["PRIIMEK"]) {
+                                        $countIt = false;
+                                        break;
+                                    }
+                                }
+                                if (!$countIt) break;
+                            }
+                            if ($countIt) $noSelfCitingCount++;
+                        }
+
+                        //echo $noSelfCitingCount."\n";
+
+                        $zic["citiranoCount"] = $noSelfCitingCount;
+
+                        //print_r($citing);
+                        */
+
+                    }
+
+
+                }
+
+
 
                 $rowCount = $zicsElastic["hits"]["total"];
-                $zics = ZicUtil::zicsDisplay(ElasticHelpers::elasticResultToSimpleArray($zicsElastic));
+                $zics = ZicUtil::zicsDisplay($zicsElasticArr);
             }
         } catch (\Exception $e) {
             if ($e instanceof ElasticsearchException) {
