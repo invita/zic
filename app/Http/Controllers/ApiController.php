@@ -57,9 +57,6 @@ class ApiController extends Controller
                 $zicsElastic = ElasticHelpers::searchString($q, $filter, $pageStart, $pageCount, $sortField, $sortOrder);
                 $zicsElasticArr = ElasticHelpers::elasticResultToSimpleArray($zicsElastic);
 
-
-                //$oAuthors = Si4Util::pathArg($zicsElasticArr, "authors", []);
-
                 //$samocitati
 
                 if (!$samocitati) {
@@ -67,49 +64,9 @@ class ApiController extends Controller
                     // Remove samocitati count
                     foreach ($zicsElasticArr as $zIdx => $zic) {
 
-                        //echo "ZIC ".$zic["ID"]."\n";
-
-                        //print_r($zic);
-
                         $citing = ElasticHelpers::searchCitingZics($zic, true);
-                        //print_r($citing);
-                        //die();
-
                         $noSelfCitingCount = Si4Util::pathArg($citing, "hits/total", 0);
                         $zicsElasticArr[$zIdx]["citiranoCount"] = $noSelfCitingCount;
-
-                        //$zic["citiranoCount"] = $noSelfCitingCount;
-                        //$zic["citiranoCount"] = 0;
-
-
-                        /*
-                        $noSelfCitingCount = 0;
-                        $citing = ElasticHelpers::searchCitingZics($zic);
-                        print_r($citing);
-                        die();
-
-                        $hits = Si4Util::pathArg($citing, "hits/hits", []);
-                        foreach ($hits as $hit) {
-                            $countIt = true;
-                            $authors = Si4Util::pathArg($hit, "_source/authors", []);
-                            foreach ($authors as $author) {
-                                foreach ($oAuthors as $oAuthor) {
-                                    if ($oAuthor["IME"] == $author["IME"] && $oAuthor["PRIIMEK"] == $author["PRIIMEK"]) {
-                                        $countIt = false;
-                                        break;
-                                    }
-                                }
-                                if (!$countIt) break;
-                            }
-                            if ($countIt) $noSelfCitingCount++;
-                        }
-
-                        //echo $noSelfCitingCount."\n";
-
-                        $zic["citiranoCount"] = $noSelfCitingCount;
-
-                        //print_r($citing);
-                        */
 
                     }
 
@@ -171,6 +128,7 @@ class ApiController extends Controller
         $q = "*";
         if (isset($inputJson["q"])) $q = $inputJson["q"];
         if (isset($inputJson["staticData"]) && isset($inputJson["staticData"]["q"])) $q = $inputJson["staticData"]["q"];
+        $samocitati = Si4Util::pathArg($inputJson, "staticData/samocitati", false);
 
         $pageStart = isset($inputJson["pageStart"]) ? $inputJson["pageStart"] : 0;
         $pageCount = isset($inputJson["pageCount"]) ? $inputJson["pageCount"] : 20;
@@ -212,7 +170,7 @@ class ApiController extends Controller
 
         try {
             if ($q) {
-                $citsElastic = ElasticHelpers::searchCitsString($q, $filter, $pageStart, $pageCount, $sortField, $sortOrder);
+                $citsElastic = ElasticHelpers::searchCitsString($q, $filter, $pageStart, $pageCount, $sortField, $sortOrder, !$samocitati);
 
                 $rowCount = $citsElastic["hits"]["total"];
                 $cits = ZicUtil::citsDisplay(ElasticHelpers::elasticResultToSimpleArray($citsElastic));

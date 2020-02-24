@@ -493,7 +493,7 @@ HERE;
     }
 
 
-    public static function searchCitsString($queryString, $filters, $offset = 0, $limit = 10, $sortField = null, $sortOrder = "asc")
+    public static function searchCitsString($queryString, $filters, $offset = 0, $limit = 10, $sortField = null, $sortOrder = "asc", $excludeSelfCits = false)
     {
 
         $searchFields = [
@@ -507,6 +507,7 @@ HERE;
 
         $must = [];
         $should = [];
+        $filter = [];
 
         $must[] = [
             "simple_query_string" => [
@@ -515,6 +516,18 @@ HERE;
                 "default_operator" => "and",
             ],
         ];
+
+        if ($excludeSelfCits) {
+            $filter[] = [
+                "script" => [
+                    "script" => [
+                        "source" => "return (doc['citatiAuthors.IME.keyword'] != doc['zic.authors.IME.keyword'] && doc['citatiAuthors.PRIIMEK.keyword'] != doc['zic.authors.PRIIMEK.keyword']);",
+                        //"source" => "if (doc['citatiAuthors.IME.keyword'] != doc['zic.authors.IME.keyword'] && doc['citatiAuthors.PRIIMEK.keyword'] != doc['zic.authors.PRIIMEK.keyword']) { return true; } else { return false; }",
+                        "lang" => "painless"
+                    ]
+                ]
+            ];
+        }
 
         if ($filters) {
             foreach ($filters as $fKey => $fVal) {
@@ -577,6 +590,7 @@ HERE;
         $query = [ "bool" => [] ];
         if (count($should)) $query["bool"]["should"] = $should;
         if (count($must)) $query["bool"]["must"] = $must;
+        if (count($filter)) $query["bool"]["filter"] = $filter;
 
         //print_r($query);
 
